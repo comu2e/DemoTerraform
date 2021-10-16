@@ -83,7 +83,7 @@ resource "aws_route" "public" {
 resource "aws_route_table_association" "public" {
   count = length(var.public_subnet_cidrs)
 
-  subnet_id      = element(aws_subnet.publics.*.id, count.index)
+  subnet_id      = element(aws_subnet.public.*.id, count.index)
   route_table_id = aws_route_table.public.id
 }
 
@@ -94,32 +94,25 @@ resource "aws_instance" "main" {
   key_name      = aws_key_pair.main.id
 
   vpc_security_group_ids = [aws_security_group.main.id]
-  subnet_id              = var.subnet_id
+  subnet_id              = aws_subnet.public[0].id
 
   # EBS最適化
   ebs_optimized = true
 
   # EBS
   root_block_device {
-    volume_size           = 8
-    volume_type           = "gp3"
-    iops                  = 3000
-    throughput            = 125
+    volume_size = 8
+    volume_type = "gp3"
+    iops        = 3000
+    # throughput            = 125
     delete_on_termination = true
-
-    tags = {
-      Name = var.app_name
-    }
   }
 
-  tags = {
-    Name = var.app_name
-  }
 }
 
 # SecurityGroup
 resource "aws_security_group" "main" {
-  vpc_id = var.vpc_id
+  vpc_id = aws_vpc.main.id
 
   name        = "${var.app_name}-ec2"
   description = "${var.app_name}-ec2"
@@ -169,41 +162,4 @@ resource "aws_eip" "main" {
   tags = {
     Name = var.app_name
   }
-}
-# SecurityGroup
-resource "aws_security_group" "main" {
-  vpc_id = var.vpc_id
-
-  name        = "${var.app_name}-ec2"
-  description = "${var.app_name}-ec2"
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "${var.app_name}-ec2"
-  }
-}
-
-# SecurityGroupRule
-resource "aws_security_group_rule" "ssh" {
-  security_group_id = aws_security_group.main.id
-  type              = "ingress"
-  cidr_blocks       = ["0.0.0.0/0"]
-  from_port         = 22
-  to_port           = 22
-  protocol          = "tcp"
-}
-
-resource "aws_security_group_rule" "http" {
-  security_group_id = aws_security_group.main.id
-  type              = "ingress"
-  cidr_blocks       = ["0.0.0.0/0"]
-  from_port         = 80
-  to_port           = 80
-  protocol          = "tcp"
 }
