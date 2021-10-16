@@ -8,3 +8,6 @@
 .terraform
 *.tfstate
 *.tfstate.backup
+
+#SSH接続用キー　サンプル用だがgitignoreしておく
+/ec2/*
