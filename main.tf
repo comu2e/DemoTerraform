@@ -1,5 +1,7 @@
 provider "aws" {
-  region = "ap-northeast-1"
+  region  = "ap-northeast-1"
+  version = "~> 3.0"
+
 }
 terraform {
   required_version = "~> 1.0.8"
@@ -14,15 +16,16 @@ variable "azs" {
   default = ["ap-northeast-1a", "ap-northeast-1c"]
 }
 variable "vpc_cidr" {
-  type    = string
   default = "10.10.0.0/16"
 }
+
+# PublicSubnets
 variable "public_subnet_cidrs" {
-  type    = list(string)
   default = ["10.10.0.0/24", "10.10.1.0/24"]
 }
+
+# PrivateSubnets
 variable "private_subnet_cidrs" {
-  type    = list(string)
   default = ["10.10.10.0/24", "10.10.11.0/24"]
 }
 resource "aws_vpc" "main" {
@@ -162,4 +165,106 @@ resource "aws_eip" "main" {
   tags = {
     Name = var.app_name
   }
+}
+
+#ECS
+####
+#Cluster
+####
+resource "aws_ecs_cluster" "main" {
+  name = var.app_name
+}
+
+data "template_file" "container_definitions" {
+  template = file("./container_definitions.json")
+  # templateのjsonファイルに値を渡す
+  vars = {
+    tag  = "latest"
+    name = var.app_name
+
+  }
+}
+resource "aws_lb" "main" {
+  load_balancer_type = "application"
+  count              = length(aws_subnet.public)
+  name               = var.app_name
+  security_groups    = [aws_security_group.main.id]
+  subnets            = [aws_subnet.public[count.index].id]
+}
+resource "aws_lb_listener" "main" {
+  count             = length(aws_subnet.public)
+  load_balancer_arn = aws_lb.main[count.index].arn
+
+  port     = 80
+  protocol = "HTTP"
+
+  default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      status_code  = "200"
+      message_body = "ok"
+    }
+  }
+}
+resource "aws_lb_listener_rule" "main" {
+  count        = length(aws_lb_listener.main)
+  listener_arn = aws_lb_listener.main[count.index].arn
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.main.arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["*"]
+    }
+  }
+}
+resource "aws_lb_target_group" "main" {
+  name   = var.app_name
+  vpc_id = aws_vpc.main.id
+  port   = 80
+  #コンテナのエフェメラルIPにバランシングするため
+  target_type = "ip"
+  protocol    = "HTTP"
+  health_check {
+    port = 80
+    path = "/"
+  }
+}
+
+
+# ECS用のSG、
+#HTTP Port80のものを許可する
+# SG
+resource "aws_security_group" "ecs" {
+  name        = "${var.app_name}-ecs"
+  description = "${var.app_name}-ecs"
+
+  vpc_id = aws_vpc.main.id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.app_name}-ecs"
+  }
+}
+
+# SGR
+resource "aws_security_group_rule" "ecs" {
+  security_group_id = aws_security_group.ecs.id
+
+  type = "ingress"
+
+  from_port   = 80
+  to_port     = 80
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
 }
