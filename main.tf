@@ -105,7 +105,7 @@ resource "aws_route_table_association" "private" {
 }
 
 # EC2
-resource "aws_instance" "main" {
+resource "aws_instance" "db" {
   ami           = "ami-0f27d081df46f326c"
   instance_type = "t3.nano"
   key_name      = aws_key_pair.main.id
@@ -172,15 +172,23 @@ resource "aws_key_pair" "main" {
   public_key = file("./ec2/ec2.pub")
 }
 # EIP
-resource "aws_eip" "main" {
-  instance = aws_instance.main.id
+resource "aws_eip" "db" {
+  instance = aws_instance.db.id
   vpc      = true
 
   tags = {
-    Name = var.app_name
+    Name = "${var.app_name}-DB"
   }
 }
+# Fargate用のNAT gateway用EIP
+resource "aws_eip" "natgateway" {
+  vpc   = true
+  count = length(aws_subnet.public)
 
+  tags = {
+    Name = "${var.app_name}-Fargate"
+  }
+}
 #ECS
 ####
 #Cluster
@@ -352,3 +360,15 @@ resource "aws_vpc_endpoint" "ssm" {
   private_dns_enabled = true
 }
 
+
+resource "aws_nat_gateway" "ecs" {
+  count         = length(aws_subnet.public)
+  allocation_id = aws_eip.natgateway[count.index].id
+  # Publicに配置するのでsubnet_idはpublicとする。
+  subnet_id = aws_subnet.public[count.index].id
+  tags = {
+    Name = "${var.app_name}-Fargate-NAT gw"
+  }
+  depends_on = [aws_internet_gateway.main]
+
+}
