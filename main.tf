@@ -1,7 +1,6 @@
 provider "aws" {
-  region  = "ap-northeast-1"
-  version = "~> 3.0"
-
+  region = "ap-northeast-1"
+  # version = "~> 3.0"
 }
 terraform {
   required_version = "~> 1.0.8"
@@ -185,14 +184,12 @@ data "template_file" "container_definitions" {
 }
 resource "aws_lb" "main" {
   load_balancer_type = "application"
-  count              = length(aws_subnet.public)
   name               = var.app_name
   security_groups    = [aws_security_group.main.id]
-  subnets            = [aws_subnet.public[count.index].id]
+  subnets            = aws_subnet.public.*.id
 }
 resource "aws_lb_listener" "main" {
-  count             = length(aws_subnet.public)
-  load_balancer_arn = aws_lb.main[count.index].arn
+  load_balancer_arn = aws_lb.main.arn
 
   port     = 80
   protocol = "HTTP"
@@ -208,8 +205,7 @@ resource "aws_lb_listener" "main" {
   }
 }
 resource "aws_lb_listener_rule" "main" {
-  count        = length(aws_lb_listener.main)
-  listener_arn = aws_lb_listener.main[count.index].arn
+  listener_arn = aws_lb_listener.main.arn
   action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.main.arn
