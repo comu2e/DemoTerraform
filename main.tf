@@ -92,17 +92,26 @@ resource "aws_route_table_association" "public" {
 # RouteTable Private
 
 resource "aws_route_table" "private" {
+  count  = length(aws_nat_gateway.ecs)
   vpc_id = aws_vpc.main.id
   tags = {
-    Name = "${var.app_name}-private"
+    Name = "${var.app_name}-private-${count.index}"
   }
 }
 # Route table private private内でのFaragateにDockerPullできるように設定
 resource "aws_route_table_association" "private" {
   count          = length(var.private_subnet_cidrs)
   subnet_id      = element(aws_subnet.private.*.id, count.index)
-  route_table_id = aws_route_table.private.id
+  route_table_id = aws_route_table.private[count.index].id
 }
+
+resource "aws_route" "private" {
+  count                  = length(aws_nat_gateway.ecs)
+  route_table_id         = aws_route_table.private[count.index].id
+  nat_gateway_id         = aws_nat_gateway.ecs[count.index].id
+  destination_cidr_block = "0.0.0.0/0"
+}
+
 
 # EC2
 resource "aws_instance" "db" {
@@ -301,12 +310,14 @@ resource "aws_vpc_endpoint" "s3" {
   vpc_endpoint_type = "Gateway"
 }
 resource "aws_vpc_endpoint_route_table_association" "private_s3" {
+  count           = length(aws_route_table.private)
   vpc_endpoint_id = aws_vpc_endpoint.s3.id
-  route_table_id  = aws_route_table.private.id
+  route_table_id  = aws_route_table.private[count.index].id
 }
 
+
 resource "aws_security_group" "vpc_endpoint" {
-  name   = "vpc_endpoint_sg"
+  name   = "${var.app_name}-vpc_endpoint_sg"
   vpc_id = aws_vpc.main.id
 
   ingress {
@@ -322,8 +333,11 @@ resource "aws_security_group" "vpc_endpoint" {
     protocol    = "tcp"
     cidr_blocks = [aws_vpc.main.cidr_block]
   }
+  tags = {
+    "Name" = "ECS Endpoint"
+  }
 }
-
+# Interface型なので各種セキュリティグループと紐づく
 resource "aws_vpc_endpoint" "ecr_dkr" {
   vpc_id              = aws_vpc.main.id
   service_name        = "com.amazonaws.ap-northeast-1.ecr.dkr"
@@ -331,6 +345,9 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
   subnet_ids          = aws_subnet.private[*].id
   security_group_ids  = [aws_security_group.vpc_endpoint.id]
   private_dns_enabled = true
+  tags = {
+    "Name" = "private-ECR_DKR"
+  }
 }
 
 resource "aws_vpc_endpoint" "ecr_api" {
@@ -340,6 +357,9 @@ resource "aws_vpc_endpoint" "ecr_api" {
   subnet_ids          = aws_subnet.private[*].id
   security_group_ids  = [aws_security_group.vpc_endpoint.id]
   private_dns_enabled = true
+  tags = {
+    "Name" = "private-ECR_API"
+  }
 }
 
 resource "aws_vpc_endpoint" "logs" {
@@ -349,6 +369,9 @@ resource "aws_vpc_endpoint" "logs" {
   subnet_ids          = aws_subnet.private[*].id
   security_group_ids  = [aws_security_group.vpc_endpoint.id]
   private_dns_enabled = true
+  tags = {
+    "Name" = "private-logs"
+  }
 }
 
 resource "aws_vpc_endpoint" "ssm" {
@@ -358,6 +381,9 @@ resource "aws_vpc_endpoint" "ssm" {
   subnet_ids          = aws_subnet.private[*].id
   security_group_ids  = [aws_security_group.vpc_endpoint.id]
   private_dns_enabled = true
+  tags = {
+    "Name" = "private-ssm"
+  }
 }
 
 
