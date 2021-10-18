@@ -47,7 +47,7 @@
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="12" value="EC2 instance" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.ec2;fillColor=#F58534;gradientColor=none;fontColor=#141414;" parent="1" vertex="1">
-                    <mxGeometry x="574.25" y="585" width="76.5" height="93" as="geometry"/>
+                    <mxGeometry x="596.25" y="597.5" width="50.75" height="68" as="geometry"/>
                 </mxCell>
                 <mxCell id="13" value="&lt;font color=&quot;#141414&quot;&gt;Redis&lt;/font&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.elasticache;fillColor=#2E73B8;gradientColor=none;" parent="1" vertex="1">
                     <mxGeometry x="1207" y="504" width="67.5" height="81" as="geometry"/>
@@ -66,7 +66,7 @@
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="16" value="P&lt;font color=&quot;#141414&quot;&gt;ElasticIP&lt;/font&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.elastic_ip;fillColor=#F58534;gradientColor=none;" parent="1" vertex="1">
-                    <mxGeometry x="450" y="620" width="76.5" height="21" as="geometry"/>
+                    <mxGeometry x="450" y="621" width="76.5" height="21" as="geometry"/>
                 </mxCell>
                 <mxCell id="76" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=5;fillColor=#f5f5f5;strokeColor=#666666;" parent="1" source="17" target="21" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
