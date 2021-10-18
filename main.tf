@@ -6,7 +6,6 @@ provider "aws" {
 terraform {
   required_version = "~> 1.0.8"
 }
-
 variable "app_name" {
   type    = string
   default = "FargateDemo"
