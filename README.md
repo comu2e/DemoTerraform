@@ -23,4 +23,4 @@ terraform plan
 terraform apply
 ```
 ## 構成図
-![aws](https://user-images.githubusercontent.com/5231283/137597998-47eafc0b-a545-42c5-ac65-339f4a35593d.png)
+![aws](https://user-images.githubusercontent.com/5231283/137711808-f0303413-75cf-4942-a09d-4d43271f3f4c.png)
