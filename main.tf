@@ -205,14 +205,20 @@ resource "aws_eip" "natgateway" {
 resource "aws_ecs_cluster" "main" {
   name = var.app_name
 }
-
+data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
+locals {
+  account_id = data.aws_caller_identity.current.account_id
+  region     = data.aws_region.current.name
+}
 data "template_file" "container_definitions" {
   template = file("./container_definitions.json")
   # templateのjsonファイルに値を渡す
   vars = {
-    tag  = "latest"
-    name = var.app_name
-
+    tag        = "latest"
+    name       = var.app_name
+    account_id = local.account_id
+    region     = local.region
   }
 }
 resource "aws_lb" "main" {
@@ -262,6 +268,75 @@ resource "aws_lb_target_group" "main" {
     path = "/"
   }
 }
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+
+resource "aws_iam_role" "task_execution" {
+  name               = "${var.app_name}-TaskExecution"
+  assume_role_policy = file("./task_execution_role.json")
+}
+
+resource "aws_iam_role_policy" "task_execution" {
+  role   = aws_iam_role.task_execution.id
+  policy = file("./task_execution_role_policy.json")
+
+}
+
+resource "aws_iam_role_policy_attachment" "task_execution" {
+  role       = aws_iam_role.task_execution.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+
+
+resource "aws_ecs_task_definition" "main" {
+  family = var.app_name
+
+  cpu                      = 256
+  memory                   = 512
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+
+  container_definitions = data.template_file.container_definitions.rendered
+
+  volume {
+    name = "app-storage"
+  }
+
+  task_role_arn      = aws_iam_role.task_execution.arn
+  execution_role_arn = aws_iam_role.task_execution.arn
+}
+
+resource "aws_ecs_service" "main" {
+  depends_on = [aws_lb_listener_rule.main]
+
+  name = var.app_name
+
+  launch_type      = "FARGATE"
+  platform_version = "1.4.0"
+
+  desired_count = 1
+
+  cluster = aws_ecs_cluster.main.name
+
+  task_definition = aws_ecs_task_definition.main.arn
+
+  # GitHubActionsと整合性を取りたい場合は下記のようにrevisionを指定しなければよい
+  # task_definition = "arn:aws:ecs:ap-northeast-1:${local.account_id}:task-definition/${aws_ecs_task_definition.main.family}"
+
+  network_configuration {
+    subnets          = aws_subnet.private[*].id
+    security_groups  = [aws_security_group.ecs.id]
+    assign_public_ip = true
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.main.arn
+    container_name   = "nginx"
+    container_port   = 80
+  }
+}
+# 
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 
 
 # ECS用のSG、
