@@ -252,23 +252,6 @@ resource "aws_lb_target_group" "main" {
 }
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 
-resource "aws_iam_role" "task_execution" {
-  name               = "${var.app_name}-TaskExecution"
-  assume_role_policy = file("./iam/task_execution_role.json")
-}
-
-resource "aws_iam_role_policy" "task_execution" {
-  role   = aws_iam_role.task_execution.id
-  policy = file("./iam/task_execution_role_policy.json")
-
-}
-
-resource "aws_iam_role_policy_attachment" "task_execution" {
-  role       = aws_iam_role.task_execution.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
-
-
 
 resource "aws_ecs_task_definition" "main" {
   family = var.app_name
@@ -284,8 +267,13 @@ resource "aws_ecs_task_definition" "main" {
     name = "app-storage"
   }
 
-  task_role_arn      = aws_iam_role.task_execution.arn
-  execution_role_arn = aws_iam_role.task_execution.arn
+  task_role_arn      = module.iam.aws_iam_role_task_exection_arn
+  execution_role_arn = module.iam.aws_iam_role_task_exection_arn
+}
+
+module "iam" {
+  source   = "./iam"
+  app_name = var.app_name
 }
 
 resource "aws_ecs_service" "main" {
