@@ -1,31 +1,11 @@
 provider "aws" {
   region = "ap-northeast-1"
-  # version = "~> 3.0"
+  # version = "3.0"
 }
 terraform {
-  required_version = "~> 1.0.8"
-}
-variable "app_name" {
-  type    = string
-  default = "FargateDemo"
-}
-variable "azs" {
-  type    = list(string)
-  default = ["ap-northeast-1a", "ap-northeast-1c"]
-}
-variable "vpc_cidr" {
-  default = "10.10.0.0/16"
+  required_version = "1.0.8"
 }
 
-# PublicSubnets
-variable "public_subnet_cidrs" {
-  default = ["10.10.0.0/24", "10.10.1.0/24"]
-}
-
-# PrivateSubnets
-variable "private_subnet_cidrs" {
-  default = ["10.10.10.0/24", "10.10.11.0/24"]
-}
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
@@ -214,7 +194,7 @@ locals {
   region     = data.aws_region.current.name
 }
 data "template_file" "container_definitions" {
-  template = file("./container_definitions.json")
+  template = file("./ecs/container_definitions.json")
   # templateのjsonファイルに値を渡す
   vars = {
     tag        = "latest"
@@ -274,12 +254,12 @@ resource "aws_lb_target_group" "main" {
 
 resource "aws_iam_role" "task_execution" {
   name               = "${var.app_name}-TaskExecution"
-  assume_role_policy = file("./task_execution_role.json")
+  assume_role_policy = file("./iam/task_execution_role.json")
 }
 
 resource "aws_iam_role_policy" "task_execution" {
   role   = aws_iam_role.task_execution.id
-  policy = file("./task_execution_role_policy.json")
+  policy = file("./iam/task_execution_role_policy.json")
 
 }
 
@@ -337,6 +317,12 @@ resource "aws_ecs_service" "main" {
     container_port   = 80
   }
 }
+# Log
+resource "aws_cloudwatch_log_group" "main" {
+  name              = "/${var.app_name}/ecs"
+  retention_in_days = 7
+}
+
 # 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 
