@@ -133,7 +133,9 @@ resource "aws_instance" "db" {
     # throughput            = 125
     delete_on_termination = true
   }
-
+  tags = {
+    "Name" = "${var.app_name}-DBStepInstance"
+  }
 }
 
 # SecurityGroup
@@ -412,6 +414,7 @@ resource "aws_security_group" "vpc_endpoint" {
     "Name" = "ECS Endpoint"
   }
 }
+
 # Interface型なので各種セキュリティグループと紐づく
 resource "aws_vpc_endpoint" "ecr_dkr" {
   vpc_id              = aws_vpc.main.id
