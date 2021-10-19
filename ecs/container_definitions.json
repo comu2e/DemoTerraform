@@ -1,7 +1,7 @@
 [
     {
         "name": "nginx",
-        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/sample-nginx:${tag}",
+        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/nginx",
         "portMappings": [
             {
                 "containerPort": 80,
@@ -20,13 +20,13 @@
             "options": {
                 "awslogs-region": "${region}",
                 "awslogs-group": "/${name}/ecs",
-                "awslogs-stream-prefix": "sample-nginx"
+                "awslogs-stream-prefix": "${name}-nginx"
             }
         }
     },
     {
         "name": "app",
-        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/sample-app:${tag}",
+        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/app",
         "mountPoints": [
             {
                 "sourceVolume": "app-storage",
@@ -38,7 +38,7 @@
             "options": {
                 "awslogs-region": "${region}",
                 "awslogs-group": "/${name}/ecs",
-                "awslogs-stream-prefix": "sample-app"
+                "awslogs-stream-prefix": "${name}-app"
             }
         },
         "environment": [
