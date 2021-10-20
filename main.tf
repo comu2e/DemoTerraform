@@ -7,6 +7,8 @@ terraform {
 }
 
 module "ecs_endpoint" {
+  depends_on = [aws_lb_listener_rule.main]
+
   source              = "./endpoint"
   app_name            = var.app_name
   vpc_id              = module.network.vpc_id
@@ -47,7 +49,6 @@ resource "aws_security_group" "http" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
   tags = {
     Name = "${var.app_name}-main"
   }
@@ -62,8 +63,6 @@ resource "aws_security_group_rule" "http" {
   protocol          = "tcp"
 }
 
-
-
 #ECS
 ####
 #Cluster
@@ -71,21 +70,15 @@ resource "aws_security_group_rule" "http" {
 resource "aws_ecs_cluster" "main" {
   name = var.app_name
 }
-data "aws_region" "current" {}
-data "aws_caller_identity" "current" {}
-locals {
-  account_id = data.aws_caller_identity.current.account_id
-  region     = data.aws_region.current.name
-}
-data "template_file" "container_definitions" {
-  template = file("./ecs/container_definitions.json")
-  # templateのjsonファイルに値を渡す
-  vars = {
-    tag        = "latest"
-    name       = var.app_name
-    account_id = local.account_id
-    region     = local.region
-  }
+
+module "ecs_app" {
+  source                         = "./ecs"
+  app_name                       = var.app_name
+  cluster                        = aws_ecs_cluster.main.name
+  aws_iam_role_task_exection_arn = module.iam.aws_iam_role_task_exection_arn
+  target_group_arn               = aws_lb_target_group.main.arn
+  placement_subnet               = module.network.public_subnet_ids
+  endpoint_sg                    = [module.ecs_endpoint.endpoint_sg_id]
 }
 resource "aws_lb" "main" {
   load_balancer_type = "application"
@@ -135,64 +128,3 @@ resource "aws_lb_target_group" "main" {
     path = "/"
   }
 }
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
-
-
-resource "aws_ecs_task_definition" "main" {
-  family = var.app_name
-
-  cpu                      = 256
-  memory                   = 512
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-
-  container_definitions = data.template_file.container_definitions.rendered
-
-  volume {
-    name = "app-storage"
-  }
-
-  task_role_arn      = module.iam.aws_iam_role_task_exection_arn
-  execution_role_arn = module.iam.aws_iam_role_task_exection_arn
-}
-
-
-
-resource "aws_ecs_service" "main" {
-  depends_on = [aws_lb_listener_rule.main]
-
-  name = var.app_name
-
-  launch_type      = "FARGATE"
-  platform_version = "1.4.0"
-
-  desired_count = 1
-
-  cluster = aws_ecs_cluster.main.name
-
-  task_definition = aws_ecs_task_definition.main.arn
-
-  # GitHubActionsと整合性を取りたい場合は下記のようにrevisionを指定しなければよい
-  # task_definition = "arn:aws:ecs:ap-northeast-1:${local.account_id}:task-definition/${aws_ecs_task_definition.main.family}"
-
-  network_configuration {
-    subnets          = module.network.public_subnet_ids
-    security_groups  = [module.ecs_endpoint.endpoint_sg_id]
-    assign_public_ip = true
-  }
-
-  load_balancer {
-    target_group_arn = aws_lb_target_group.main.arn
-    container_name   = "nginx"
-    container_port   = 80
-  }
-}
-# Log
-resource "aws_cloudwatch_log_group" "main" {
-  name              = "/${var.app_name}/ecs"
-  retention_in_days = 7
-}
-
-# 
-#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
-
