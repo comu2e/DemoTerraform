@@ -2,18 +2,22 @@ variable "app_name" {
   type = string
 }
 variable "cluster" {
-  type = string
+  description = "ECS Cluster"
+  type        = string
 }
 variable "aws_iam_role_task_exection_arn" {
-  type = string
+  description = "ECS Task execution IAM role arn"
+  type        = string
 }
-
+# public subnetに配置するか、private subnetに配置するかを制御する
 variable "placement_subnet" {
-  type = list(string)
+  description = "ECS placement subnet.Public subnet or Private subnet is expected."
+  type        = list(string)
 }
 
-variable "endpoint_sg" {
-  type = list(string)
+variable "sg" {
+  description = "ECS security group.HTTP/HTTP security group is expected"
+  type        = list(string)
 }
 
 variable "target_group_arn" {
@@ -72,10 +76,8 @@ resource "aws_ecs_service" "main" {
   # task_definition = "arn:aws:ecs:ap-northeast-1:${local.account_id}:task-definition/${aws_ecs_task_definition.main.family}"
 
   network_configuration {
-    subnets         = var.placement_subnet
-    security_groups = var.endpoint_sg
-    # subnets          = module.network.public_subnet_ids
-    # security_groups  = [module.ecs_endpoint.endpoint_sg_id]
+    subnets          = var.placement_subnet
+    security_groups  = var.sg
     assign_public_ip = true
   }
 
