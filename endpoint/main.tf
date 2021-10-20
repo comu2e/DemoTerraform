@@ -1,7 +1,9 @@
-# SGR
-# ECS用のSG、
-#HTTP Port80のものを許可する
-# SG
+#================================ 
+# ECSのエンドポイント設定
+# SGにaws vpc Endpoint interfaceを付与する。
+# 新たにECSにendpointを設定したい場合はaws_vpc_endpointを設定する。
+# HTTPS Port443のみ許可
+
 
 variable "vpc_id" {
   type = string
