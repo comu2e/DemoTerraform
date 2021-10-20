@@ -19,6 +19,12 @@ module "iam" {
   source   = "./iam"
   app_name = var.app_name
 }
+module "compute" {
+  source           = "./compute"
+  app_name         = var.app_name
+  public_subnet_id = aws_subnet.public[0].id
+  public_sg        = [aws_security_group.main.id]
+}
 
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
@@ -49,8 +55,6 @@ resource "aws_subnet" "private" {
     "Name" = "${var.app_name}-Private-${count.index}"
   }
 }
-
-
 # IGW
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
@@ -59,7 +63,6 @@ resource "aws_internet_gateway" "main" {
     Name = var.app_name
   }
 }
-
 # RouteTable(Public)
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
@@ -68,14 +71,12 @@ resource "aws_route_table" "public" {
     Name = "${var.app_name}-public"
   }
 }
-
 # Route(Public)
 resource "aws_route" "public" {
   destination_cidr_block = "0.0.0.0/0"
   route_table_id         = aws_route_table.public.id
   gateway_id             = aws_internet_gateway.main.id
 }
-
 # RouteTableAssociation(Public)
 resource "aws_route_table_association" "public" {
   count          = length(var.public_subnet_cidrs)
@@ -105,31 +106,6 @@ resource "aws_route" "private" {
   destination_cidr_block = "0.0.0.0/0"
 }
 
-
-# EC2
-resource "aws_instance" "db" {
-  ami           = "ami-0f27d081df46f326c"
-  instance_type = "t3.nano"
-  key_name      = aws_key_pair.main.id
-
-  vpc_security_group_ids = [aws_security_group.main.id]
-  subnet_id              = aws_subnet.public[0].id
-
-  # EBS最適化
-  ebs_optimized = true
-
-  # EBS
-  root_block_device {
-    volume_size = 8
-    volume_type = "gp3"
-    iops        = 3000
-    # throughput            = 125
-    delete_on_termination = true
-  }
-  tags = {
-    "Name" = "${var.app_name}-DBStepInstance"
-  }
-}
 
 # SecurityGroup
 resource "aws_security_group" "main" {
@@ -169,21 +145,7 @@ resource "aws_security_group_rule" "http" {
   protocol          = "tcp"
 }
 
-# SSHKey
-# ご自身でデモする場合はssh-keygenでrsaキーを作成してpublic keyに設定してください
-resource "aws_key_pair" "main" {
-  key_name   = "sample-ec2-key"
-  public_key = file("./ec2/ec2.pub")
-}
-# EIP
-resource "aws_eip" "db" {
-  instance = aws_instance.db.id
-  vpc      = true
 
-  tags = {
-    Name = "${var.app_name}-DB"
-  }
-}
 # Fargate用のNAT gateway用EIP
 resource "aws_eip" "natgateway" {
   vpc   = true
