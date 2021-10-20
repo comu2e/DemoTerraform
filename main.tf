@@ -14,14 +14,9 @@ module "network" {
   private_subnet_cidrs = var.private_subnet_cidrs
 }
 # SecurityGroup
-module "http_sg" {
-  source   = "./security"
-  app_name = var.app_name
-  vpc_id   = module.network.vpc_id
-}
-module "ecs_endpoint" {
+module "sg" {
   depends_on          = [module.alb.aws_lb_target_group]
-  source              = "./endpoint"
+  source              = "./security"
   app_name            = var.app_name
   vpc_cidr            = var.vpc_cidr
   vpc_id              = module.network.vpc_id
@@ -39,7 +34,7 @@ module "compute" {
   app_name         = var.app_name
   vpc_id           = module.network.vpc_id
   public_subnet_id = module.network.private_subnet_ids[0]
-
+  ssh_sg_id        = module.sg.ssh_sg_id
 }
 
 #ECS
@@ -48,7 +43,7 @@ module "alb" {
   app_name          = var.app_name
   vpc_id            = module.network.vpc_id
   public_subnet_ids = module.network.public_subnet_ids
-  http_sg           = module.http_sg.http_access_sg.id
+  http_sg           = module.sg.endpoint_sg_id
 }
 
 resource "aws_ecs_cluster" "main" {
@@ -58,9 +53,9 @@ resource "aws_ecs_cluster" "main" {
 module "ecs_app" {
   source                         = "./ecs"
   app_name                       = var.app_name
+  cluster                        = aws_ecs_cluster.main.name
   placement_subnet               = module.network.private_subnet_ids
   target_group_arn               = module.alb.aws_lb_target_group
   aws_iam_role_task_exection_arn = module.iam.aws_iam_role_task_exection_arn
-  cluster                        = aws_ecs_cluster.main.name
-  sg                             = [module.http_sg.http_access_sg.id, module.ecs_endpoint.endpoint_sg_id]
+  sg                             = [module.sg.http_sg_id, module.sg.endpoint_sg_id]
 }
