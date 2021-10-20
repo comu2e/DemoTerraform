@@ -23,50 +23,28 @@ resource "aws_security_group_rule" "http" {
   to_port           = 80
   protocol          = "tcp"
 }
-
+resource "aws_security_group_rule" "https" {
+  security_group_id = aws_security_group.http.id
+  type              = "ingress"
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+}
 #================================ 
 # ECSのエンドポイント設定
+# https://zenn.dev/samuraikun/articles/0d22699a9878cd
+# https://zenn.dev/yoshinori_satoh/articles/ecs-fargate-vpc-endpoint
 # SGにaws vpc Endpoint interfaceを付与する。
 # 新たにECSにendpointを設定したい場合はaws_vpc_endpointを設定する。
 # HTTPS Port443のみ許可
-
-resource "aws_security_group" "ecs_endoint" {
-  name        = "${var.app_name}-ecs-endpoint"
-  description = "${var.app_name}-ecs-endpoint"
-
-  vpc_id = var.vpc_id
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "${var.app_name}-ecs-endpoint"
-  }
-}
-
-resource "aws_security_group_rule" "ecs_endpoint" {
-  security_group_id = aws_security_group.ecs_endpoint.id
-
-  type = "ingress"
-
-  from_port   = 80
-  to_port     = 80
-  protocol    = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
-}
-
 # ECS Fargate Private SubnetでのEndPointを作成
 # NAT gatewayを使わずにVPC Endpointを作成
-# https://zenn.dev/samuraikun/articles/0d22699a9878cd
-# https://zenn.dev/yoshinori_satoh/articles/ecs-fargate-vpc-endpoint
 # PrivateSubnetのRouteTable,vpc_endpointの設定
 # Fargate v1.4ではecr.apiなど各種private link を設定する必要ある
 # private_dns_enabled = trueで、プライベートDNSを有効化する必要ある
 resource "aws_vpc_endpoint" "s3" {
+
   vpc_id            = var.vpc_id
   service_name      = "com.amazonaws.ap-northeast-1.s3"
   vpc_endpoint_type = "Gateway"
@@ -98,7 +76,17 @@ resource "aws_security_group" "ecs_endpoint" {
     "Name" = "ECS Endpoint"
   }
 }
+resource "aws_security_group_rule" "ecs_endpoint" {
 
+  security_group_id = aws_security_group.ecs_endpoint.id
+
+  type = "ingress"
+
+  from_port   = 80
+  to_port     = 80
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+}
 # Interface型なので各種セキュリティグループと紐づく
 resource "aws_vpc_endpoint" "ecr_dkr" {
   vpc_id              = var.vpc_id
