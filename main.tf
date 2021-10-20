@@ -6,6 +6,20 @@ terraform {
   required_version = "1.0.8"
 }
 
+module "ecs_endpoint" {
+  source              = "./endpoint"
+  app_name            = var.app_name
+  vpc_id              = aws_vpc.main.id
+  vpc_cidr            = aws_vpc.main.cidr_block
+  private_route_table = aws_route_table.private
+  private_subnet      = aws_subnet.private[*].id
+}
+
+module "iam" {
+  source   = "./iam"
+  app_name = var.app_name
+}
+
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
@@ -64,8 +78,7 @@ resource "aws_route" "public" {
 
 # RouteTableAssociation(Public)
 resource "aws_route_table_association" "public" {
-  count = length(var.public_subnet_cidrs)
-
+  count          = length(var.public_subnet_cidrs)
   subnet_id      = element(aws_subnet.public.*.id, count.index)
   route_table_id = aws_route_table.public.id
 }
@@ -271,10 +284,7 @@ resource "aws_ecs_task_definition" "main" {
   execution_role_arn = module.iam.aws_iam_role_task_exection_arn
 }
 
-module "iam" {
-  source   = "./iam"
-  app_name = var.app_name
-}
+
 
 resource "aws_ecs_service" "main" {
   depends_on = [aws_lb_listener_rule.main]
@@ -295,7 +305,7 @@ resource "aws_ecs_service" "main" {
 
   network_configuration {
     subnets          = aws_subnet.private[*].id
-    security_groups  = [aws_security_group.ecs.id]
+    security_groups  = [module.ecs_endpoint.endpoint_sg_id]
     assign_public_ip = true
   }
 
@@ -313,131 +323,6 @@ resource "aws_cloudwatch_log_group" "main" {
 
 # 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
-
-
-# ECS用のSG、
-#HTTP Port80のものを許可する
-# SG
-resource "aws_security_group" "ecs" {
-  name        = "${var.app_name}-ecs"
-  description = "${var.app_name}-ecs"
-
-  vpc_id = aws_vpc.main.id
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "${var.app_name}-ecs"
-  }
-}
-
-# SGR
-resource "aws_security_group_rule" "ecs" {
-  security_group_id = aws_security_group.ecs.id
-
-  type = "ingress"
-
-  from_port   = 80
-  to_port     = 80
-  protocol    = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
-}
-
-# ECS Fargate Private SubnetでのEndPointを作成
-# NAT gatewayを使わずにVPC Endpointを作成
-# https://zenn.dev/samuraikun/articles/0d22699a9878cd
-# https://zenn.dev/yoshinori_satoh/articles/ecs-fargate-vpc-endpoint
-# PrivateSubnetのRouteTable,vpc_endpointの設定
-# Fargate v1.4ではecr.apiなど各種private link を設定する必要ある
-# private_dns_enabled = trueで、プライベートDNSを有効化する必要ある
-resource "aws_vpc_endpoint" "s3" {
-  vpc_id            = aws_vpc.main.id
-  service_name      = "com.amazonaws.ap-northeast-1.s3"
-  vpc_endpoint_type = "Gateway"
-}
-resource "aws_vpc_endpoint_route_table_association" "private_s3" {
-  count           = length(aws_route_table.private)
-  vpc_endpoint_id = aws_vpc_endpoint.s3.id
-  route_table_id  = aws_route_table.private[count.index].id
-}
-
-
-resource "aws_security_group" "vpc_endpoint" {
-  name   = "${var.app_name}-vpc_endpoint_sg"
-  vpc_id = aws_vpc.main.id
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = [aws_vpc.main.cidr_block]
-  }
-
-  egress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = [aws_vpc.main.cidr_block]
-  }
-  tags = {
-    "Name" = "ECS Endpoint"
-  }
-}
-
-# Interface型なので各種セキュリティグループと紐づく
-resource "aws_vpc_endpoint" "ecr_dkr" {
-  vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.ap-northeast-1.ecr.dkr"
-  vpc_endpoint_type   = "Interface"
-  subnet_ids          = aws_subnet.private[*].id
-  security_group_ids  = [aws_security_group.vpc_endpoint.id]
-  private_dns_enabled = true
-  tags = {
-    "Name" = "private-ECR_DKR"
-  }
-}
-
-resource "aws_vpc_endpoint" "ecr_api" {
-  vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.ap-northeast-1.ecr.api"
-  vpc_endpoint_type   = "Interface"
-  subnet_ids          = aws_subnet.private[*].id
-  security_group_ids  = [aws_security_group.vpc_endpoint.id]
-  private_dns_enabled = true
-  tags = {
-    "Name" = "private-ECR_API"
-  }
-}
-
-resource "aws_vpc_endpoint" "logs" {
-  vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.ap-northeast-1.logs"
-  vpc_endpoint_type   = "Interface"
-  subnet_ids          = aws_subnet.private[*].id
-  security_group_ids  = [aws_security_group.vpc_endpoint.id]
-  private_dns_enabled = true
-  tags = {
-    "Name" = "private-logs"
-  }
-}
-
-resource "aws_vpc_endpoint" "ssm" {
-  vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.ap-northeast-1.ssm"
-  vpc_endpoint_type   = "Interface"
-  subnet_ids          = aws_subnet.private[*].id
-  security_group_ids  = [aws_security_group.vpc_endpoint.id]
-  private_dns_enabled = true
-  tags = {
-    "Name" = "private-ssm"
-  }
-}
-
 
 resource "aws_nat_gateway" "ecs" {
   count         = length(aws_subnet.public)
