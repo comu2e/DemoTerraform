@@ -1,21 +1,24 @@
 
 variable "app_name" {
-  type = string
+  description = "Application Name"
+  type        = string
 }
 variable "vpc_cidr" {
-  type = string
+  description = "VPC CIDR blocks"
+  type        = string
 }
 variable "public_subnet_cidrs" {
-  type = list(string)
+  description = "Public Subnet CIDR blocks"
+  type        = list(string)
 }
 variable "private_subnet_cidrs" {
-  type = list(string)
+  description = "Public Subnet CIDR blocks"
+  type        = list(string)
 }
 variable "azs" {
-  type = list(string)
+  description = "Availability zones"
+  type        = list(string)
 }
-
-
 
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
