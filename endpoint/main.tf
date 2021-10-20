@@ -64,9 +64,9 @@ resource "aws_vpc_endpoint" "s3" {
   vpc_endpoint_type = "Gateway"
 }
 resource "aws_vpc_endpoint_route_table_association" "private_s3" {
-  count           = length(var.private_route_table)
+  count           = length(var.private_subnet)
   vpc_endpoint_id = aws_vpc_endpoint.s3.id
-  route_table_id  = var.private_route_table[count.index].id
+  route_table_id  = var.private_route_table[count.index].route_table_id
 }
 
 
@@ -145,3 +145,4 @@ resource "aws_vpc_endpoint" "ssm" {
 output "endpoint_sg_id" {
   value = aws_security_group.ecs.id
 }
+
