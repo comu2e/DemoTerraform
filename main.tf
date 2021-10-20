@@ -9,10 +9,10 @@ terraform {
 module "ecs_endpoint" {
   source              = "./endpoint"
   app_name            = var.app_name
-  vpc_id              = aws_vpc.main.id
-  vpc_cidr            = aws_vpc.main.cidr_block
-  private_route_table = aws_route_table.private
-  private_subnet      = aws_subnet.private[*].id
+  vpc_id              = module.network.vpc_id
+  vpc_cidr            = var.vpc_cidr
+  private_route_table = module.network.route_table_private
+  private_subnet      = module.network.private_subnet_ids
 }
 
 module "iam" {
@@ -22,97 +22,24 @@ module "iam" {
 module "compute" {
   source           = "./compute"
   app_name         = var.app_name
-  public_subnet_id = aws_subnet.public[0].id
-  public_sg        = [aws_security_group.main.id]
-}
+  vpc_id           = module.network.vpc_id
+  public_subnet_id = module.network.private_subnet_ids[0]
 
-resource "aws_vpc" "main" {
-  cidr_block           = var.vpc_cidr
-  enable_dns_hostnames = true
-  enable_dns_support   = true
-  # インスタンスがホスト上で共有されるようになります
-  instance_tenancy = "default"
-  tags = {
-    "Name" = "${var.app_name}"
-  }
 }
-resource "aws_subnet" "public" {
-  count             = length(var.public_subnet_cidrs)
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = var.public_subnet_cidrs[count.index]
-  availability_zone = var.azs[count.index]
-  tags = {
-    "Name" = "${var.app_name}-Public-${count.index}"
-  }
+module "network" {
+  source               = "./network"
+  app_name             = var.app_name
+  vpc_cidr             = var.vpc_cidr
+  public_subnet_cidrs  = var.public_subnet_cidrs
+  private_subnet_cidrs = var.private_subnet_cidrs
+  azs                  = var.azs
 }
-
-resource "aws_subnet" "private" {
-  count             = length(var.private_subnet_cidrs)
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = var.private_subnet_cidrs[count.index]
-  availability_zone = var.azs[count.index]
-  tags = {
-    "Name" = "${var.app_name}-Private-${count.index}"
-  }
-}
-# IGW
-resource "aws_internet_gateway" "main" {
-  vpc_id = aws_vpc.main.id
-
-  tags = {
-    Name = var.app_name
-  }
-}
-# RouteTable(Public)
-resource "aws_route_table" "public" {
-  vpc_id = aws_vpc.main.id
-
-  tags = {
-    Name = "${var.app_name}-public"
-  }
-}
-# Route(Public)
-resource "aws_route" "public" {
-  destination_cidr_block = "0.0.0.0/0"
-  route_table_id         = aws_route_table.public.id
-  gateway_id             = aws_internet_gateway.main.id
-}
-# RouteTableAssociation(Public)
-resource "aws_route_table_association" "public" {
-  count          = length(var.public_subnet_cidrs)
-  subnet_id      = element(aws_subnet.public.*.id, count.index)
-  route_table_id = aws_route_table.public.id
-}
-# RouteTable Private
-
-resource "aws_route_table" "private" {
-  count  = length(aws_nat_gateway.ecs)
-  vpc_id = aws_vpc.main.id
-  tags = {
-    Name = "${var.app_name}-private-${count.index}"
-  }
-}
-# Route table private private内でのFaragateにDockerPullできるように設定
-resource "aws_route_table_association" "private" {
-  count          = length(var.private_subnet_cidrs)
-  subnet_id      = element(aws_subnet.private.*.id, count.index)
-  route_table_id = aws_route_table.private[count.index].id
-}
-
-resource "aws_route" "private" {
-  count                  = length(aws_nat_gateway.ecs)
-  route_table_id         = aws_route_table.private[count.index].id
-  nat_gateway_id         = aws_nat_gateway.ecs[count.index].id
-  destination_cidr_block = "0.0.0.0/0"
-}
-
-
 # SecurityGroup
-resource "aws_security_group" "main" {
-  vpc_id = aws_vpc.main.id
+resource "aws_security_group" "http" {
+  vpc_id = module.network.vpc_id
 
-  name        = "${var.app_name}-ec2"
-  description = "${var.app_name}-ec2"
+  name        = "${var.app_name}-main"
+  description = "${var.app_name}-main"
 
   egress {
     from_port   = 0
@@ -122,22 +49,12 @@ resource "aws_security_group" "main" {
   }
 
   tags = {
-    Name = "${var.app_name}-ec2"
+    Name = "${var.app_name}-main"
   }
 }
 
-# SecurityGroupRule
-resource "aws_security_group_rule" "ssh" {
-  security_group_id = aws_security_group.main.id
-  type              = "ingress"
-  cidr_blocks       = ["0.0.0.0/0"]
-  from_port         = 22
-  to_port           = 22
-  protocol          = "tcp"
-}
-
 resource "aws_security_group_rule" "http" {
-  security_group_id = aws_security_group.main.id
+  security_group_id = aws_security_group.http.id
   type              = "ingress"
   cidr_blocks       = ["0.0.0.0/0"]
   from_port         = 80
@@ -146,15 +63,7 @@ resource "aws_security_group_rule" "http" {
 }
 
 
-# Fargate用のNAT gateway用EIP
-resource "aws_eip" "natgateway" {
-  vpc   = true
-  count = length(aws_subnet.public)
 
-  tags = {
-    Name = "${var.app_name}-Fargate"
-  }
-}
 #ECS
 ####
 #Cluster
@@ -181,8 +90,8 @@ data "template_file" "container_definitions" {
 resource "aws_lb" "main" {
   load_balancer_type = "application"
   name               = var.app_name
-  security_groups    = [aws_security_group.main.id]
-  subnets            = aws_subnet.public.*.id
+  security_groups    = [aws_security_group.http.id]
+  subnets            = module.network.public_subnet_ids
 }
 resource "aws_lb_listener" "main" {
   load_balancer_arn = aws_lb.main.arn
@@ -215,11 +124,12 @@ resource "aws_lb_listener_rule" "main" {
 }
 resource "aws_lb_target_group" "main" {
   name   = var.app_name
-  vpc_id = aws_vpc.main.id
+  vpc_id = module.network.vpc_id
   port   = 80
-  #コンテナのエフェメラルIPにバランシングするため
-  target_type = "ip"
-  protocol    = "HTTP"
+  # 300sで登録解除は長いので60sに設定
+  deregistration_delay = 60
+  target_type          = "ip"
+  protocol             = "HTTP"
   health_check {
     port = 80
     path = "/"
@@ -266,7 +176,7 @@ resource "aws_ecs_service" "main" {
   # task_definition = "arn:aws:ecs:ap-northeast-1:${local.account_id}:task-definition/${aws_ecs_task_definition.main.family}"
 
   network_configuration {
-    subnets          = aws_subnet.private[*].id
+    subnets          = module.network.public_subnet_ids
     security_groups  = [module.ecs_endpoint.endpoint_sg_id]
     assign_public_ip = true
   }
@@ -286,14 +196,3 @@ resource "aws_cloudwatch_log_group" "main" {
 # 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 
-resource "aws_nat_gateway" "ecs" {
-  count         = length(aws_subnet.public)
-  allocation_id = aws_eip.natgateway[count.index].id
-  # Publicに配置するのでsubnet_idはpublicとする。
-  subnet_id = aws_subnet.public[count.index].id
-  tags = {
-    Name = "${var.app_name}-Fargate-NAT gw"
-  }
-  depends_on = [aws_internet_gateway.main]
-
-}
