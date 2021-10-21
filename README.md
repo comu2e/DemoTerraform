@@ -18,4 +18,5 @@ terraform plan
 terraform apply
 ```
 ## 構成図
-![aws](https://user-images.githubusercontent.com/5231283/138271185-55b28aef-f37d-4021-9f6b-00d2ca8ab2f8.png)
+![aws](https://user-images.githubusercontent.com/5231283/138271599-7e3ce3e3-32ba-4526-aa61-1d6e74f52c37.png)
+
