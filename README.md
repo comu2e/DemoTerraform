@@ -8,13 +8,16 @@ ECS Fargate をTerraformで作成したサンプルになります。
 - Terraform/v1.0.8
 - aws-cli/2.2.43 
 - Python/3.9.7
+- 
 ## 実行方法
 - aws cliで使用するAWSで環境の設定をしておいてください。
 - ec2の踏み台サーバーの鍵はec2/key内に
 ```ssh-keygen```
+
 -ECRにDockerImageをプッシュしておく。
 今回のサンプルは下記のDocker(nginx/php-fpm)の簡素な構成としています。
 https://github.com/comu2e/nginx-php-Sample
+
 変更時は上記のDockerfile,confファイルなどを使用用途に合わせて変更するとともに、
 container-defition.jsonを変更してください。
 
