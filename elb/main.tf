@@ -19,6 +19,8 @@ variable "public_subnet_ids" {
 
 resource "aws_lb" "main" {
   load_balancer_type = "application"
+  internal           = false
+  idle_timeout       = 60
   name               = var.app_name
   security_groups    = [var.http_sg]
   #   security_groups    = [aws_security_group.http.id]
@@ -50,6 +52,7 @@ resource "aws_lb_listener_rule" "main" {
 
   condition {
     path_pattern {
+      # [*]?
       values = ["*"]
     }
   }
@@ -57,14 +60,21 @@ resource "aws_lb_listener_rule" "main" {
 resource "aws_lb_target_group" "main" {
   name   = var.app_name
   vpc_id = var.vpc_id
-  port   = 80
-  # 300sで登録解除は長いので60sに設定
-  deregistration_delay = 60
+  #FargateではIPに設定する必要ある
   target_type          = "ip"
+  port                 = 80
+  deregistration_delay = 300
   protocol             = "HTTP"
   health_check {
-    port = 80
-    path = "/"
+    path                = "/"
+    healthy_threshold   = 5
+    unhealthy_threshold = 2
+    timeout             = 5
+    interval            = 30
+    matcher             = 200
+    # port = 80?
+    port     = "traffic-port"
+    protocol = "HTTP"
   }
 }
 

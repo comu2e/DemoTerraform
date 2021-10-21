@@ -1,21 +1,30 @@
 resource "aws_security_group" "http" {
-  vpc_id = var.vpc_id
 
   name        = "${var.app_name}-main"
   description = "${var.app_name}-main"
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  vpc_id      = var.vpc_id
   tags = {
     Name = "${var.app_name}-main"
   }
 }
-
-resource "aws_security_group_rule" "http" {
+resource "aws_security_group_rule" "http_egress" {
+  security_group_id = aws_security_group.http.id
+  type              = "egress"
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 0
+  to_port           = 0
+  protocol          = "all"
+}
+resource "aws_security_group_rule" "https_egress" {
+  security_group_id = aws_security_group.http.id
+  type              = "egress"
+  # ここをcidr_blocks = var.cidr_blocks
+  cidr_blocks = ["0.0.0.0/0"]
+  from_port   = 443
+  to_port     = 443
+  protocol    = "tcp"
+}
+resource "aws_security_group_rule" "http_ingress" {
   security_group_id = aws_security_group.http.id
   type              = "ingress"
   cidr_blocks       = ["0.0.0.0/0"]
@@ -23,7 +32,7 @@ resource "aws_security_group_rule" "http" {
   to_port           = 80
   protocol          = "tcp"
 }
-resource "aws_security_group_rule" "https" {
+resource "aws_security_group_rule" "https_ingress" {
   security_group_id = aws_security_group.http.id
   type              = "ingress"
   cidr_blocks       = ["0.0.0.0/0"]

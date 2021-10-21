@@ -35,6 +35,9 @@ resource "aws_subnet" "public" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = var.public_subnet_cidrs[count.index]
   availability_zone = var.azs[count.index]
+  # instanceにパブリックIPを自動的に割り当てる
+  map_public_ip_on_launch = true
+
   tags = {
     "Name" = "${var.app_name}-Public-${count.index}"
   }
@@ -45,6 +48,8 @@ resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = var.private_subnet_cidrs[count.index]
   availability_zone = var.azs[count.index]
+  # instanceにパブリックIPは不要
+  map_public_ip_on_launch = false
   tags = {
     "Name" = "${var.app_name}-Private-${count.index}"
   }
@@ -87,20 +92,18 @@ resource "aws_nat_gateway" "ecs" {
   tags = {
     Name = "${var.app_name}-Fargate-NAT gw"
   }
-  depends_on = [aws_internet_gateway.main]
 
 }
 # Fargate用のNAT gateway用EIP
 resource "aws_eip" "natgateway" {
   vpc   = true
   count = length(aws_subnet.public)
-
   tags = {
     Name = "${var.app_name}-Fargate"
   }
 }
 resource "aws_route_table" "private" {
-  count  = length(aws_nat_gateway.ecs)
+  count  = length(aws_subnet.public)
   vpc_id = aws_vpc.main.id
   tags = {
     Name = "${var.app_name}-private-${count.index}"
@@ -114,7 +117,7 @@ resource "aws_route_table_association" "private" {
 }
 
 resource "aws_route" "private" {
-  count                  = length(aws_nat_gateway.ecs)
+  count                  = length(aws_subnet.private)
   route_table_id         = aws_route_table.private[count.index].id
   nat_gateway_id         = aws_nat_gateway.ecs[count.index].id
   destination_cidr_block = "0.0.0.0/0"
