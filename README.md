@@ -15,7 +15,7 @@ ECS Fargate をTerraformで作成したサンプルになります。
 ```ssh-keygen```
 で作成するか、すでに作成した公開鍵を登録してください。
 
- ECRにDockerImageをプッシュしておく。
+- ECRにDockerImageをプッシュしておく。
 今回のサンプルは下記のDocker(nginx/php-fpm)の簡素な構成としています。
 https://github.com/comu2e/nginx-php-Sample
 
