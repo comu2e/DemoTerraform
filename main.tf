@@ -15,7 +15,6 @@ module "network" {
 }
 # SecurityGroup
 module "sg" {
-  depends_on          = [module.alb.aws_lb_target_group]
   source              = "./security"
   app_name            = var.app_name
   vpc_cidr            = var.vpc_cidr
@@ -43,7 +42,7 @@ module "alb" {
   app_name          = var.app_name
   vpc_id            = module.network.vpc_id
   public_subnet_ids = module.network.public_subnet_ids
-  http_sg           = module.sg.endpoint_sg_id
+  http_sg           = module.sg.http_sg_id
 }
 
 resource "aws_ecs_cluster" "main" {
