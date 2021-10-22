@@ -22,6 +22,11 @@ https://github.com/comu2e/nginx-php-Sample
 変更時は上記のDockerfile,confファイルなどを使用用途に合わせて変更するとともに、
 container-defition.jsonを変更してください。
 
+- LogはCloudFormationで確認できますが、確認のしやすさを高めるためにGrafanaCloudにLogを流せるようにしています。
+使用したい場合はGrafanaCloudのアカウント設定をしてください。
+
+- 機密情報などはAWSのParameterStoreを使用してください。
+（RDSのデータベース、ユーザー名、パスワードの管理に今回は使用しています）
 
 - terraformの環境を作成して、下記のコマンドを実行。
 ```
