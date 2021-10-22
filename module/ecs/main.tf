@@ -30,7 +30,7 @@ locals {
   region     = data.aws_region.current.name
 }
 data "template_file" "container_definitions" {
-  template = file("./ecs/container_definitions.json")
+  template = file(abspath("./module/ecs/container_definitions.json"))
   # templateのjsonファイルに値を渡す
   vars = {
     tag        = "latest"
