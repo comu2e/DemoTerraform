@@ -68,7 +68,7 @@ resource "aws_instance" "db" {
 # ご自身でデモする場合はssh-keygenでrsaキーを作成してpublic keyに設定してください
 resource "aws_key_pair" "main" {
   key_name   = "ec2"
-  public_key = file("./compute/ec2/ec2.pub")
+  public_key = file(abspath("./ec2.pub"))
 }
 # EIP
 resource "aws_eip" "db" {
