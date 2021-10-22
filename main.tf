@@ -6,7 +6,7 @@ terraform {
   required_version = "1.0.8"
 }
 module "network" {
-  source               = "./network"
+  source               = "./module/network"
   azs                  = var.azs
   app_name             = var.app_name
   vpc_cidr             = var.vpc_cidr
@@ -15,7 +15,7 @@ module "network" {
 }
 # SecurityGroup
 module "sg" {
-  source              = "./security"
+  source              = "./module/security"
   app_name            = var.app_name
   vpc_cidr            = var.vpc_cidr
   vpc_id              = module.network.vpc_id
@@ -25,11 +25,11 @@ module "sg" {
 
 # IAM role
 module "iam" {
-  source   = "./iam"
+  source   = "./module/iam"
   app_name = var.app_name
 }
 module "compute" {
-  source           = "./compute"
+  source           = "./module/compute"
   app_name         = var.app_name
   vpc_id           = module.network.vpc_id
   public_subnet_id = module.network.public_subnet_ids[0]
@@ -37,14 +37,14 @@ module "compute" {
 }
 
 module "rds" {
-  source             = "./db"
+  source             = "./module/db"
   app_name           = var.app_name
   vpc_id             = module.network.vpc_id
   private_subnet_ids = module.network.private_subnet_ids
 }
 #ECS
 module "alb" {
-  source            = "./elb"
+  source            = "./module/elb"
   app_name          = var.app_name
   vpc_id            = module.network.vpc_id
   public_subnet_ids = module.network.public_subnet_ids
@@ -56,7 +56,7 @@ resource "aws_ecs_cluster" "main" {
 }
 
 module "ecs_app" {
-  source                         = "./ecs"
+  source                         = "./module/ecs"
   app_name                       = var.app_name
   cluster                        = aws_ecs_cluster.main.name
   placement_subnet               = module.network.private_subnet_ids
