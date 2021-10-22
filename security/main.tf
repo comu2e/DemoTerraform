@@ -152,21 +152,13 @@ resource "aws_security_group" "ssh" {
 
   name        = "${var.app_name}-ssh"
   description = "${var.app_name}-ssh"
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
   tags = {
     Name = "${var.app_name}-ssh"
   }
 }
 
 # SecurityGroupRule
-resource "aws_security_group_rule" "ssh" {
+resource "aws_security_group_rule" "ingress_ssh" {
   security_group_id = aws_security_group.ssh.id
   type              = "ingress"
   cidr_blocks       = ["0.0.0.0/0"]
@@ -174,3 +166,20 @@ resource "aws_security_group_rule" "ssh" {
   to_port           = 22
   protocol          = "tcp"
 }
+resource "aws_security_group_rule" "egress_ssh" {
+  security_group_id = aws_security_group.ssh.id
+  type              = "egress"
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+}
+
+# resource "aws_security_group_rule" "ssh_http" {
+#   security_group_id = aws_security_group.ssh.id
+#   type              = "ingress"
+#   cidr_blocks       = ["0.0.0.0/0"]
+#   from_port         = 80
+#   to_port           = 80
+#   protocol          = "tcp"
+# }
