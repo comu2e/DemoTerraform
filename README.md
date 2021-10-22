@@ -36,3 +36,8 @@ terraform apply
 ```
 ## 構成図
 ![aws](https://user-images.githubusercontent.com/5231283/138431637-82e7a65f-3cbb-4fb2-9b72-287ac4e830aa.png)
+
+## Todo 
+- https化(ALB,Route53の設定)
+- Cacheサービスの選定(SQS/Elastic Cacheなど)
+- CloudFront(必要に応じて）
