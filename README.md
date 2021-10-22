@@ -41,3 +41,4 @@ terraform apply
 - https化(ALB,Route53の設定)
 - Cacheサービスの選定(SQS/Elastic Cacheなど)
 - CloudFront(必要に応じて）
+- CI/CD(nginx-phpfpmレポジトリ)
