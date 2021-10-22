@@ -32,10 +32,16 @@ module "compute" {
   source           = "./compute"
   app_name         = var.app_name
   vpc_id           = module.network.vpc_id
-  public_subnet_id = module.network.private_subnet_ids[0]
+  public_subnet_id = module.network.public_subnet_ids[0]
   ssh_sg_id        = module.sg.ssh_sg_id
 }
 
+module "rds" {
+  source             = "./db"
+  app_name           = var.app_name
+  vpc_id             = module.network.vpc_id
+  private_subnet_ids = module.network.private_subnet_ids
+}
 #ECS
 module "alb" {
   source            = "./elb"
@@ -58,3 +64,4 @@ module "ecs_app" {
   aws_iam_role_task_exection_arn = module.iam.aws_iam_role_task_exection_arn
   sg                             = [module.sg.http_sg_id, module.sg.endpoint_sg_id]
 }
+

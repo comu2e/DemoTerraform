@@ -10,4 +10,4 @@
 *.tfstate.backup
 
 #SSH接続用キー　サンプル用だがgitignoreしておく
-./compute/ec2/*
+./compute/ec2/ec2
