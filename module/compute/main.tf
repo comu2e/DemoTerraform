@@ -1,16 +1,4 @@
 
-variable "app_name" {
-  type = string
-}
-variable "public_subnet_id" {
-  type = string
-}
-variable "vpc_id" {
-  type = string
-}
-variable "ssh_sg_id" {
-  type = string
-}
 # EC2
 resource "aws_instance" "db" {
   ami           = "ami-0f27d081df46f326c"
@@ -79,6 +67,3 @@ resource "aws_eip" "db" {
   }
 }
 
-output "db_step_eip" {
-  value = aws_eip.db.address
-}
