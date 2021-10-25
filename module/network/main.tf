@@ -1,25 +1,4 @@
 
-variable "app_name" {
-  description = "Application Name"
-  type        = string
-}
-variable "vpc_cidr" {
-  description = "VPC CIDR blocks"
-  type        = string
-}
-variable "public_subnet_cidrs" {
-  description = "Public Subnet CIDR blocks"
-  type        = list(string)
-}
-variable "private_subnet_cidrs" {
-  description = "Public Subnet CIDR blocks"
-  type        = list(string)
-}
-variable "azs" {
-  description = "Availability zones"
-  type        = list(string)
-}
-
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
@@ -123,20 +102,3 @@ resource "aws_route" "private" {
   destination_cidr_block = "0.0.0.0/0"
 }
 
-output "vpc_id" {
-  value = aws_vpc.main.id
-}
-
-output "private_subnet_ids" {
-  value = aws_subnet.private[*].id
-}
-output "public_subnet_ids" {
-  value = aws_subnet.public[*].id
-}
-
-output "route_table_public" {
-  value = aws_route.public
-}
-output "route_table_private" {
-  value = aws_route.private[*]
-}

@@ -1,21 +1,4 @@
-variable "app_name" {
-  description = "Application Name"
-  type        = string
-}
-variable "vpc_id" {
-  description = "VPC ID"
-  type        = string
-}
 
-variable "http_sg" {
-  description = "HTTP access security group"
-  type        = string
-}
-
-variable "public_subnet_ids" {
-  description = "Public subnet ids."
-  type        = list(string)
-}
 
 resource "aws_lb" "main" {
   load_balancer_type = "application"
@@ -76,11 +59,4 @@ resource "aws_lb_target_group" "main" {
     port     = "traffic-port"
     protocol = "HTTP"
   }
-}
-
-output "aws_lb_target_group" {
-  value = aws_lb_target_group.main.arn
-}
-output "dns_name" {
-  value = aws_lb.main.dns_name
 }
