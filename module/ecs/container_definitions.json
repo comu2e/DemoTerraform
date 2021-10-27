@@ -1,7 +1,7 @@
 [
     {
         "name": "nginx",
-        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/nginx:${tag}",
+        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${name}-nginx:${tag}",
         "portMappings": [
             {
                 "containerPort": 80,
@@ -26,7 +26,7 @@
     },
     {
         "name": "app",
-        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/app:${tag}",
+        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${name}-app:${tag}",
         "mountPoints": [
             {
                 "sourceVolume": "app-storage",
@@ -39,6 +39,38 @@
                 "awslogs-region": "${region}",
                 "awslogs-group": "/${name}/ecs",
                 "awslogs-stream-prefix": "${name}-app"
+            }
+        },
+        "environment": [
+            {
+                "name": "APP_KEY",
+                "value": "hogefugapiyo"
+            },
+            {
+                "name": "APP_ENV",
+                "value": "production"
+            },
+            {
+                "name": "LOG_CHANNEL",
+                "value": "stderr"
+            }
+        ]
+    },
+    {
+        "name": "worker",
+        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${name}-worker:${tag}",
+        "mountPoints": [
+            {
+                "sourceVolume": "app-storage",
+                "containerPath": "/app"
+            }
+        ],
+        "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+                "awslogs-region": "${region}",
+                "awslogs-group": "/${name}/ecs",
+                "awslogs-stream-prefix": "${name}-worker"
             }
         },
         "environment": [
