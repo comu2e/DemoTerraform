@@ -1,6 +1,6 @@
 variable "app_name" {
   type    = string
-  default = "FargateDemo"
+  default = "test-aws-takahashi"
 }
 variable "azs" {
   type    = list(string)

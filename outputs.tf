@@ -12,6 +12,10 @@ output "db_step_ip" {
 output "db_endpoint" {
   value = module.rds.endpoint
 }
-output "ecs_exec_role"{
+output "ecs_exec_role" {
   value = module.iam.aws_iam_role_task_exection_arn
+}
+
+output "redi_hosename" {
+  value = module.redis.redis_hostname
 }
