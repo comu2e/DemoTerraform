@@ -12,6 +12,13 @@ output "db_step_ip" {
 output "db_endpoint" {
   value = module.rds.endpoint
 }
+output "db_subnets" {
+  value = module.network.private_subnet_ids
+}
+output "db_sg" {
+  value = module.rds.db_sg
+}
+
 output "ecs_exec_role" {
   value = module.iam.aws_iam_role_task_exection_arn
 }

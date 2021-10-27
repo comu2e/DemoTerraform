@@ -19,7 +19,7 @@
             "logDriver": "awslogs",
             "options": {
                 "awslogs-region": "${region}",
-                "awslogs-group": "/${name}/ecs",
+                "awslogs-group": "/${name}-nginx/ecs",
                 "awslogs-stream-prefix": "${name}-nginx"
             }
         }
@@ -37,40 +37,8 @@
             "logDriver": "awslogs",
             "options": {
                 "awslogs-region": "${region}",
-                "awslogs-group": "/${name}/ecs",
+                "awslogs-group": "/${name}-nginx/ecs",
                 "awslogs-stream-prefix": "${name}-app"
-            }
-        },
-        "environment": [
-            {
-                "name": "APP_KEY",
-                "value": "hogefugapiyo"
-            },
-            {
-                "name": "APP_ENV",
-                "value": "production"
-            },
-            {
-                "name": "LOG_CHANNEL",
-                "value": "stderr"
-            }
-        ]
-    },
-    {
-        "name": "worker",
-        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${name}-worker:${tag}",
-        "mountPoints": [
-            {
-                "sourceVolume": "app-storage",
-                "containerPath": "/app"
-            }
-        ],
-        "logConfiguration": {
-            "logDriver": "awslogs",
-            "options": {
-                "awslogs-region": "${region}",
-                "awslogs-group": "/${name}/ecs",
-                "awslogs-stream-prefix": "${name}-worker"
             }
         },
         "environment": [
