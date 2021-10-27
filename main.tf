@@ -65,3 +65,10 @@ module "ecs_app" {
   sg                             = [module.sg.http_sg_id, module.sg.endpoint_sg_id]
 }
 
+
+module "redis" {
+  source             = "./module/redis"
+  app_name           = var.app_name
+  vpc_id             = module.network.vpc_id
+  private_subnet_ids = module.network.private_subnet_ids
+}
