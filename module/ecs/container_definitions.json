@@ -43,16 +43,18 @@
         },
         "environment": [
             {
-                "name": "APP_KEY",
-                "value": "hogefugapiyo"
-            },
-            {
                 "name": "APP_ENV",
                 "value": "production"
             },
             {
                 "name": "LOG_CHANNEL",
                 "value": "stderr"
+            }
+        ],
+        "secretes": [
+            {
+                "name": "APP_KEY",
+                "vallueFrom": "APP_KEY"
             }
         ]
     }
