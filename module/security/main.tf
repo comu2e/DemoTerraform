@@ -40,6 +40,14 @@ resource "aws_security_group_rule" "https_ingress" {
   to_port           = 443
   protocol          = "tcp"
 }
+resource "aws_security_group_rule" "worker_ingress" {
+  security_group_id = aws_security_group.http.id
+  type              = "ingress"
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 6379
+  to_port           = 6379
+  protocol          = "tcp"
+}
 #================================ 
 # ECSのエンドポイント設定
 # https://zenn.dev/samuraikun/articles/0d22699a9878cd

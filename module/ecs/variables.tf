@@ -47,9 +47,10 @@ data "template_file" "container_definitions" {
   template = file(abspath(var.task_definition_file_path))
   # templateのjsonファイルに値を渡す
   vars = {
-    tag        = "latest"
-    name       = var.app_name
-    account_id = local.account_id
-    region     = local.region
+    tag                  = "latest"
+    name                 = var.app_name
+    entry_container_name = var.entry_container_name
+    account_id           = local.account_id
+    region               = local.region
   }
 }
