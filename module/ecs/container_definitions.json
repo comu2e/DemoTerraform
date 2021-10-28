@@ -19,7 +19,7 @@
             "logDriver": "awslogs",
             "options": {
                 "awslogs-region": "${region}",
-                "awslogs-group": "/${name}/ecs",
+                "awslogs-group": "/${name}/${entry_container_name}/ecs",
                 "awslogs-stream-prefix": "${name}-nginx"
             }
         }
@@ -37,7 +37,7 @@
             "logDriver": "awslogs",
             "options": {
                 "awslogs-region": "${region}",
-                "awslogs-group": "/${name}/ecs",
+                "awslogs-group": "/${name}/${entry_container_name}/ecs",
                 "awslogs-stream-prefix": "${name}-app"
             }
         },
@@ -51,10 +51,10 @@
                 "value": "stderr"
             }
         ],
-        "secretes": [
+        "secrets": [
             {
                 "name": "APP_KEY",
-                "vallueFrom": "APP_KEY"
+                "valueFrom": "APP_KEY"
             }
         ]
     }
