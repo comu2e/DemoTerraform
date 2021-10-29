@@ -13,6 +13,7 @@ resource "aws_ecs_task_definition" "main" {
     name = "app-storage"
   }
 
+
   task_role_arn      = var.aws_iam_role_task_exection_arn
   execution_role_arn = var.aws_iam_role_task_exection_arn
 }
