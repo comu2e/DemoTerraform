@@ -115,7 +115,7 @@ resource "aws_ecs_service" "main" {
 }
 # Log
 resource "aws_cloudwatch_log_group" "main" {
-  name              = "/${var.app_name}/${var.entry_container_name}/ecs"
+  name              = "/${var.app_name}/${var.entry_container_name}"
   retention_in_days = 7
 }
 
@@ -131,8 +131,9 @@ data "template_file" "php_artisan_inspire" {
   template = file(abspath("./module/worker/ecs_container_overrides.json"))
 
   vars = {
-    container_name = "${var.app_name}-${var.entry_container_name}"
-    command        = "inspire"
+    # container_name = "${var.app_name}-${var.entry_container_name}"
+    command = "inspire"
+    # command = "queue:work --tries=1"
   }
 }
 variable "cluster_arn" {
