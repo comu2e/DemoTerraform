@@ -1,7 +1,7 @@
 [
     {
         "name": "nginx",
-        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/nginx:${tag}",
+        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${name}-nginx:${tag}",
         "portMappings": [
             {
                 "containerPort": 80,
@@ -19,14 +19,14 @@
             "logDriver": "awslogs",
             "options": {
                 "awslogs-region": "${region}",
-                "awslogs-group": "/${name}/ecs",
+                "awslogs-group": "/${name}/${entry_container_name}/ecs",
                 "awslogs-stream-prefix": "${name}-nginx"
             }
         }
     },
     {
         "name": "app",
-        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/app:${tag}",
+        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${name}-app:${tag}",
         "mountPoints": [
             {
                 "sourceVolume": "app-storage",
@@ -37,15 +37,11 @@
             "logDriver": "awslogs",
             "options": {
                 "awslogs-region": "${region}",
-                "awslogs-group": "/${name}/ecs",
+                "awslogs-group": "/${name}/${entry_container_name}/ecs",
                 "awslogs-stream-prefix": "${name}-app"
             }
         },
         "environment": [
-            {
-                "name": "APP_KEY",
-                "value": "hogefugapiyo"
-            },
             {
                 "name": "APP_ENV",
                 "value": "production"
@@ -53,6 +49,12 @@
             {
                 "name": "LOG_CHANNEL",
                 "value": "stderr"
+            }
+        ],
+        "secrets": [
+            {
+                "name": "APP_KEY",
+                "valueFrom": "APP_KEY"
             }
         ]
     }
