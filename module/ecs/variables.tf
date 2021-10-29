@@ -37,6 +37,15 @@ variable "entry_container_port" {
   type        = number
   description = "Entrypoint container port number ex:nginx or worker port is expected"
 }
+
+
+variable "service_registries_arn" {
+  type        = string
+  description = "Service Registry arn used for alignment containers"
+}
+
+
+
 data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 locals {
