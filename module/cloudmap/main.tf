@@ -1,5 +1,5 @@
 resource "aws_service_discovery_private_dns_namespace" "internal" {
-  name        = var.app_name
+  name        = "${var.app_name}-internal"
   description = "${var.app_name}-internal"
   vpc         = var.vpc_id
 }

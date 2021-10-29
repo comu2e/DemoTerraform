@@ -66,6 +66,7 @@ module "ecs_app" {
   target_group_arn               = module.alb.aws_lb_target_group
   aws_iam_role_task_exection_arn = module.iam.aws_iam_role_task_exection_arn
   sg                             = [module.sg.http_sg_id, module.sg.endpoint_sg_id]
+  service_registries_arn         = module.cloudmap.cloudmap_internal_Arn
 }
 
 module "cloudmap" {
