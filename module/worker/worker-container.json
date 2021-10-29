@@ -1,0 +1,43 @@
+[
+    {
+        "name": "worker",
+        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${name}-app:${tag}",
+        "mountPoints": [
+            {
+                "sourceVolume": "app-storage",
+                "containerPath": "/app"
+            }
+        ],
+        "portMappings": [
+            {
+                "containerPort": 6379,
+                "hostPort": 6379,
+                "protocol": "tcp"
+            }
+        ],
+        "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+                "awslogs-region": "${region}",
+                "awslogs-group": "/${name}/${entry_container_name}/ecs",
+                "awslogs-stream-prefix": "${name}-worker"
+            }
+        },
+        "environment": [
+            {
+                "name": "APP_ENV",
+                "value": "production"
+            },
+            {
+                "name": "LOG_CHANNEL",
+                "value": "stderr"
+            }
+        ],
+        "secrets": [
+            {
+                "name": "APP_KEY",
+                "valueFrom": "APP_KEY"
+            }
+        ]
+    }
+]
