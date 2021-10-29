@@ -60,4 +60,7 @@ resource "aws_elasticache_cluster" "main" {
   parameter_group_name = "default.redis5.0"
   node_type            = "cache.t3.micro"
   num_cache_nodes      = 1
+  tags = {
+    "Name" = "${var.app_name}-redis"
+  }
 }

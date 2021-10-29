@@ -1,4 +1,3 @@
-
 resource "aws_security_group" "main" {
   name        = local.db_name
   description = local.db_name
