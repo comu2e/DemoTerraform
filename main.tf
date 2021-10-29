@@ -53,6 +53,10 @@ module "alb" {
 
 resource "aws_ecs_cluster" "main" {
   name = var.app_name
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
 }
 
 module "ecs_app" {
@@ -86,6 +90,8 @@ module "ecs_worker" {
   aws_iam_role_task_exection_arn = module.iam.aws_iam_role_task_exection_arn
   sg                             = [module.sg.http_sg_id, module.sg.endpoint_sg_id]
   service_registries_arn         = module.cloudmap.cloudmap_internal_Arn
+  vpc_id                         = module.network.vpc_id
+  cluster_arn                    = aws_ecs_cluster.main.arn
 }
 
 

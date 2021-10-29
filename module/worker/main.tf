@@ -118,3 +118,66 @@ resource "aws_cloudwatch_log_group" "main" {
   name              = "/${var.app_name}/${var.entry_container_name}/ecs"
   retention_in_days = 7
 }
+
+# Task Scheduler
+resource "aws_cloudwatch_event_rule" "inspire_every_minutes" {
+  description         = "run php artisan inspire every minutes"
+  is_enabled          = true
+  name                = "inspire_every_minutes"
+  schedule_expression = "cron(* * * * ? *)"
+}
+
+data "template_file" "php_artisan_inspire" {
+  template = file(abspath("./module/worker/ecs_container_overrides.json"))
+
+  vars = {
+    container_name = "${var.app_name}-${var.entry_container_name}"
+    command        = "inspire"
+  }
+}
+variable "cluster_arn" {
+  type = string
+}
+variable "vpc_id" {
+  type = string
+}
+
+resource "aws_cloudwatch_event_target" "inspire" {
+  rule      = aws_cloudwatch_event_rule.inspire_every_minutes.name
+  arn       = var.cluster_arn
+  target_id = "inspire"
+  role_arn  = aws_iam_role.ecs_events_run_task.arn
+  input     = data.template_file.php_artisan_inspire.rendered
+  ecs_target {
+    launch_type         = "FARGATE"
+    task_count          = 1
+    task_definition_arn = replace(aws_ecs_task_definition.main.arn, "/:[0-9]+$/", "")
+    network_configuration {
+      # assign_public_ip = true
+      security_groups = var.sg
+      subnets         = var.placement_subnet
+    }
+  }
+}
+
+data "aws_iam_policy_document" "events_assume_role" {
+  statement {
+    sid     = "CloudWatchEvents"
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      identifiers = ["events.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+}
+
+resource "aws_iam_role" "ecs_events_run_task" {
+  name               = "ECSEventsRunTask"
+  assume_role_policy = data.aws_iam_policy_document.events_assume_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_events_run_task" {
+  role       = aws_iam_role.ecs_events_run_task.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceEventsRole"
+}
