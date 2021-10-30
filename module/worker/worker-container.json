@@ -39,12 +39,28 @@
             {
                 "name": "LOG_CHANNEL",
                 "value": "stderr"
+            },
+            {
+                "name": "SESSION_DRIVER",
+                "value": "redis"
+            },
+            {
+                "name": "CACHE_DRIVER",
+                "value": "redis"
+            },
+            {
+                "name": "QUEUE_CONNECTION",
+                "value": "redis"
             }
         ],
         "secrets": [
             {
                 "name": "APP_KEY",
                 "valueFrom": "APP_KEY"
+            },
+            {
+                "name": "REDIS_URL",
+                "valueFrom": "REDIS_URL"
             }
         ]
     }
