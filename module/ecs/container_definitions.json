@@ -73,8 +73,8 @@
                 "valueFrom": "APP_KEY"
             },
             {
-                "name": "REDIS_HOST",
-                "valueFrom": "REDIS_HOST"
+                "name": "REDIS_URL",
+                "valueFrom": "REDIS_URL"
             }
         ]
     }
