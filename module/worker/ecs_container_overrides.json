@@ -5,8 +5,7 @@
       "command": [
         "php",
         "artisan",
-        "${command}",
-        "${option}"
+        "${command}"
       ]
     }
   ]

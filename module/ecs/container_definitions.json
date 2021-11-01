@@ -19,7 +19,7 @@
             "logDriver": "awslogs",
             "options": {
                 "awslogs-region": "${region}",
-                "awslogs-group": "/${name}/${entry_container_name}/ecs",
+                "awslogs-group": "/${name}/${entry_container_name}",
                 "awslogs-stream-prefix": "${name}-nginx"
             }
         }
@@ -37,7 +37,7 @@
             "logDriver": "awslogs",
             "options": {
                 "awslogs-region": "${region}",
-                "awslogs-group": "/${name}/${entry_container_name}/ecs",
+                "awslogs-group": "/${name}/${entry_container_name}",
                 "awslogs-stream-prefix": "${name}-app"
             }
         },

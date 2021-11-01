@@ -132,9 +132,9 @@ data "template_file" "php_artisan_inspire" {
 
   vars = {
     # container_name = "${var.app_name}-${var.entry_container_name}"
-    # command = "inspire"
-    command = "queue:work"
-    option  = "--tries=1"
+    command = "inspire"
+    # command = "queue:work"
+    # option  = "--tries=1"
   }
 }
 variable "cluster_arn" {
