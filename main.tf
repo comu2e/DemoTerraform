@@ -35,13 +35,6 @@ module "compute" {
   public_subnet_id = module.network.public_subnet_ids[0]
   ssh_sg_id        = module.sg.ssh_sg_id
 }
-
-module "rds" {
-  source             = "./module/db"
-  app_name           = var.app_name
-  vpc_id             = module.network.vpc_id
-  private_subnet_ids = module.network.private_subnet_ids
-}
 #ECS
 module "alb" {
   source            = "./module/elb"
@@ -97,6 +90,13 @@ module "ecs_worker" {
 
 module "redis" {
   source             = "./module/redis"
+  app_name           = var.app_name
+  vpc_id             = module.network.vpc_id
+  private_subnet_ids = module.network.private_subnet_ids
+}
+
+module "rds" {
+  source             = "./module/db"
   app_name           = var.app_name
   vpc_id             = module.network.vpc_id
   private_subnet_ids = module.network.private_subnet_ids
