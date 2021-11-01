@@ -14,6 +14,6 @@ locals {
   name = "${var.app_name}-redis"
 }
 
-variable "sg_redis_id" {
+variable "redis_sg_id" {
   type = string
 }

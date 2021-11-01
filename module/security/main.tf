@@ -185,10 +185,9 @@ resource "aws_security_group_rule" "egress_ssh" {
 
 # Redis-security group
 resource "aws_security_group" "redis" {
-  name        = local.name
-  description = local.name
-
-  vpc_id = var.vpc_id
+  name        = "${var.app_name}-redis"
+  description = "${var.app_name}-redis"
+  vpc_id      = var.vpc_id
 
   egress {
     from_port   = 0
@@ -198,7 +197,7 @@ resource "aws_security_group" "redis" {
   }
 
   tags = {
-    Name = local.name
+    Name = "${var.app_name}-redis"
   }
 }
 
@@ -211,13 +210,13 @@ resource "aws_security_group_rule" "redis" {
   to_port     = 6379
   protocol    = "tcp"
   cidr_blocks = ["10.10.0.0/16"]
+  # cidr_blocks = var.private_subnet_cidrs
 }
 #RDB
 resource "aws_security_group" "db" {
-  name        = local.db_name
-  description = local.db_name
-
-  vpc_id = var.vpc_id
+  name        = "${var.app_name}-db"
+  description = "${var.app_name}-db"
+  vpc_id      = var.vpc_id
 
   egress {
     from_port   = 0
@@ -227,8 +226,7 @@ resource "aws_security_group" "db" {
   }
 
   tags = {
-    Name = local.db_name
-  }
+  Name = "${var.app_name}-db" }
 }
 
 resource "aws_security_group_rule" "pgsql" {
@@ -240,4 +238,5 @@ resource "aws_security_group_rule" "pgsql" {
   to_port     = 5432
   protocol    = "tcp"
   cidr_blocks = ["10.10.0.0/16"]
+  # cidr_blocks = var.private_subnet_cidrs
 }
