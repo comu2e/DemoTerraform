@@ -19,7 +19,7 @@
             "logDriver": "awslogs",
             "options": {
                 "awslogs-region": "${region}",
-                "awslogs-group": "/${name}/${entry_container_name}",
+                "awslogs-group": "/${name}/worker",
                 "awslogs-stream-prefix": "${name}-worker"
             }
         },
