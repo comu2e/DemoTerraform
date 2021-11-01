@@ -92,6 +92,7 @@ module "redis" {
   source             = "./module/redis"
   app_name           = var.app_name
   vpc_id             = module.network.vpc_id
+  redis_sg_id        = module.security.redis_sg_id
   private_subnet_ids = module.network.private_subnet_ids
 }
 
@@ -99,5 +100,6 @@ module "rds" {
   source             = "./module/db"
   app_name           = var.app_name
   vpc_id             = module.network.vpc_id
+  db_sgdb_sg_id      = module.security.db_sg_id
   private_subnet_ids = module.network.private_subnet_ids
 }
