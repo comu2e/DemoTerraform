@@ -4,6 +4,10 @@ variable "app_name" {
 variable "vpc_id" {
   type = string
 }
+variable "db_sg_id" {
+  type        = string
+  description = "RDB security group"
+}
 variable "private_subnet_ids" {
   type = list(string)
 }
@@ -18,7 +22,6 @@ data "aws_ssm_parameter" "db_password" {
   name = "DB_PASSWORD"
 }
 locals {
-
   db_username = data.aws_ssm_parameter.db_username.value
   db_password = data.aws_ssm_parameter.db_password.value
   db_name     = data.aws_ssm_parameter.db_name.value

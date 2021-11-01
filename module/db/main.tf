@@ -1,31 +1,3 @@
-resource "aws_security_group" "main" {
-  name        = local.db_name
-  description = local.db_name
-
-  vpc_id = var.vpc_id
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = local.db_name
-  }
-}
-
-resource "aws_security_group_rule" "pgsql" {
-  security_group_id = aws_security_group.main.id
-
-  type = "ingress"
-
-  from_port   = 5432
-  to_port     = 5432
-  protocol    = "tcp"
-  cidr_blocks = ["10.10.0.0/16"]
-}
 
 resource "aws_db_subnet_group" "main" {
   name        = lower(local.db_name)
@@ -35,7 +7,7 @@ resource "aws_db_subnet_group" "main" {
 
 resource "aws_db_instance" "main" {
   identifier             = lower(var.app_name)
-  vpc_security_group_ids = [aws_security_group.main.id]
+  vpc_security_group_ids = [var.db_sg_id]
   db_subnet_group_name   = aws_db_subnet_group.main.name
 
   allocated_storage = 10
