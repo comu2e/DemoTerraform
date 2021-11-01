@@ -1,5 +1,3 @@
-
-
 resource "aws_elasticache_subnet_group" "main" {
   name        = local.name
   description = local.name

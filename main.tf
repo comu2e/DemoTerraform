@@ -15,12 +15,14 @@ module "network" {
 }
 # SecurityGroup
 module "sg" {
-  source              = "./module/security"
-  app_name            = var.app_name
-  vpc_cidr            = var.vpc_cidr
-  vpc_id              = module.network.vpc_id
-  private_route_table = module.network.route_table_private
-  private_subnet      = module.network.private_subnet_ids
+  source               = "./module/security"
+  app_name             = var.app_name
+  vpc_cidr             = var.vpc_cidr
+  vpc_id               = module.network.vpc_id
+  private_route_table  = module.network.route_table_private
+  private_subnet       = module.network.private_subnet_ids
+  private_subnet_cidrs = var.private_subnet_cidrs
+
 }
 
 # IAM role
@@ -92,7 +94,7 @@ module "redis" {
   source             = "./module/redis"
   app_name           = var.app_name
   vpc_id             = module.network.vpc_id
-  redis_sg_id        = module.security.redis_sg_id
+  redis_sg_id        = module.sg.redis_sg_id
   private_subnet_ids = module.network.private_subnet_ids
 }
 
@@ -100,6 +102,6 @@ module "rds" {
   source             = "./module/db"
   app_name           = var.app_name
   vpc_id             = module.network.vpc_id
-  db_sgdb_sg_id      = module.security.db_sg_id
+  db_sg_id           = module.sg.db_sg_id
   private_subnet_ids = module.network.private_subnet_ids
 }
