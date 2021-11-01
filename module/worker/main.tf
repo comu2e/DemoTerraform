@@ -115,7 +115,7 @@ resource "aws_ecs_service" "main" {
 }
 # Log
 resource "aws_cloudwatch_log_group" "main" {
-  name              = "/${var.app_name}/${var.entry_container_name}"
+  name              = "/${var.app_name}/worker"
   retention_in_days = 7
 }
 
