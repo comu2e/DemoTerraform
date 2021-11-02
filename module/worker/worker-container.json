@@ -20,7 +20,7 @@
             "options": {
                 "awslogs-region": "${region}",
                 "awslogs-group": "/${name}/worker",
-                "awslogs-stream-prefix": "${name}-worker"
+                "awslogs-stream-prefix": "ecs"
             }
         },
         "healthCheck": {
