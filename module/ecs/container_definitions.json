@@ -20,7 +20,7 @@
             "options": {
                 "awslogs-region": "${region}",
                 "awslogs-group": "/${name}/app-ngix",
-                "awslogs-stream-prefix": "ecs"
+                "awslogs-stream-prefix": "ecs/nginx"
             }
         }
     },
@@ -38,7 +38,7 @@
             "options": {
                 "awslogs-region": "${region}",
                 "awslogs-group": "/${name}/app-ngix",
-                "awslogs-stream-prefix": "ecs"
+                "awslogs-stream-prefix": "ecs/app"
             }
         },
         "environment": [
@@ -61,10 +61,6 @@
             {
                 "name": "QUEUE_CONNECTION",
                 "value": "redis"
-            },
-            {
-                "name": "REDIS_SCHEME",
-                "value": "tls"
             }
         ],
         "secrets": [
@@ -73,8 +69,8 @@
                 "valueFrom": "APP_KEY"
             },
             {
-                "name": "REDIS_URL",
-                "valueFrom": "REDIS_URL"
+                "name": "REDIS_HOST",
+                "valueFrom": "REDIS_HOST"
             }
         ]
     }
