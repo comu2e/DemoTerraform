@@ -20,7 +20,7 @@
             "options": {
                 "awslogs-region": "${region}",
                 "awslogs-group": "/${name}/app-ngix",
-                "awslogs-stream-prefix": "${name}-nginx"
+                "awslogs-stream-prefix": "ecs"
             }
         }
     },
@@ -38,7 +38,7 @@
             "options": {
                 "awslogs-region": "${region}",
                 "awslogs-group": "/${name}/app-ngix",
-                "awslogs-stream-prefix": "${name}-app"
+                "awslogs-stream-prefix": "ecs"
             }
         },
         "environment": [
