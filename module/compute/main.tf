@@ -39,7 +39,9 @@ resource "aws_instance" "db" {
   rpm -ivh --nodeps https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
   sed -i "s/\$releasever/7/g" "/etc/yum.repos.d/pgdg-redhat-all.repo"
   yum install -y postgresql12
-
+  # Redis
+  sudo amazon-linux-extras install redis6
+  yum install -y redis --enablerepo=epel
   ### JST
   sed -ie 's/ZONE=\"UTC\"/ZONE=\"Asia\/Tokyo\"/g' /etc/sysconfig/clock
   sed -ie 's/UTC=true/UTC=false/g' /etc/sysconfig/clock

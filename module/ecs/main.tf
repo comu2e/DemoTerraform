@@ -21,13 +21,13 @@ resource "aws_ecs_service" "main" {
   #   depends_on = [aws_lb_listener_rule.main]
 
   name = "${var.app_name}-${var.entry_container_name}"
-
+  enable_execute_command = true
   launch_type      = "FARGATE"
   platform_version = "1.4.0"
 
-  desired_count = 1
-
-  cluster = var.cluster
+  desired_count                     = 1
+  health_check_grace_period_seconds = 15
+  cluster                           = var.cluster
 
   task_definition = aws_ecs_task_definition.main.arn
 
@@ -51,6 +51,6 @@ resource "aws_ecs_service" "main" {
 }
 # Log
 resource "aws_cloudwatch_log_group" "main" {
-  name              = "/${var.app_name}/${var.entry_container_name}/ecs"
+  name              = "/${var.app_name}/app-ngix"
   retention_in_days = 7
 }

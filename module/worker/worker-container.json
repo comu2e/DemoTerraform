@@ -2,6 +2,19 @@
     {
         "name": "worker",
         "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${name}-app:${tag}",
+        "command": [
+            "php",
+            "artisan",
+            "queue:work",
+            "--tries=1"
+        ],
+        "managedAgents": [
+            {
+                "lastStartedAt": "2021-03-01T14:49:44.574000-06:00",
+                "name": "ExecuteCommandAgent",
+                "lastStatus": "RUNNING"
+            }
+        ],
         "mountPoints": [
             {
                 "sourceVolume": "app-storage",
@@ -19,8 +32,8 @@
             "logDriver": "awslogs",
             "options": {
                 "awslogs-region": "${region}",
-                "awslogs-group": "/${name}/${entry_container_name}/ecs",
-                "awslogs-stream-prefix": "${name}-worker"
+                "awslogs-group": "/${name}/worker",
+                "awslogs-stream-prefix": "ecs"
             }
         },
         "healthCheck": {
@@ -39,12 +52,44 @@
             {
                 "name": "LOG_CHANNEL",
                 "value": "stderr"
+            },
+            {
+                "name": "SESSION_DRIVER",
+                "value": "redis"
+            },
+            {
+                "name": "CACHE_DRIVER",
+                "value": "redis"
+            },
+            {
+                "name": "QUEUE_CONNECTION",
+                "value": "redis"
             }
         ],
         "secrets": [
             {
                 "name": "APP_KEY",
                 "valueFrom": "APP_KEY"
+            },
+            {
+                "name": "REDIS_HOST",
+                "valueFrom": "REDIS_HOST"
+            },
+            {
+                "name": "DB_HOST",
+                "valueFrom": "DB_HOST"
+            },
+            {
+                "name": "DB_DATABASE",
+                "valueFrom": "DB_NAME"
+            },
+            {
+                "name": "DB_USERNAME",
+                "valueFrom": "DB_USERNAME"
+            },
+            {
+                "name": "DB_PASSWORD",
+                "valueFrom": "DB_PASSWORD"
             }
         ]
     }
