@@ -15,3 +15,6 @@ variable "private_route_table" {
 variable "private_subnet" {
   type = list(string)
 }
+variable "private_subnet_cidrs" {
+  type = list(string)
+}
