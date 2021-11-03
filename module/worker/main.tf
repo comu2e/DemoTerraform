@@ -121,20 +121,18 @@ resource "aws_cloudwatch_log_group" "main" {
 }
 
 # Task Scheduler
-resource "aws_cloudwatch_event_rule" "inspire_every_minutes" {
-  description         = "run php artisan inspire every minutes"
+resource "aws_cloudwatch_event_rule" "scheduler" {
+  description         = "run php artisan scheduler every minutes"
   is_enabled          = true
-  name                = "inspire_every_minutes"
+  name                = "scheduler_every_minutes"
   schedule_expression = "cron(* * * * ? *)"
 }
 
-data "template_file" "php_artisan_inspire" {
+data "template_file" "php_artisan_scheduler" {
   template = file(abspath("./module/worker/ecs_container_overrides.json"))
 
   vars = {
-    # container_name = "${var.app_name}-${var.entry_container_name}"
-    command = "inspire"
-    # command = "queue:work"
+    command = "scheduler:run"
     # option  = "--tries=1"
   }
 }
@@ -145,18 +143,17 @@ variable "vpc_id" {
   type = string
 }
 
-resource "aws_cloudwatch_event_target" "inspire" {
-  rule      = aws_cloudwatch_event_rule.inspire_every_minutes.name
+resource "aws_cloudwatch_event_target" "scheduler" {
+  rule      = aws_cloudwatch_event_rule.scheduler.name
   arn       = var.cluster_arn
-  target_id = "inspire"
+  target_id = "scheduler"
   role_arn  = aws_iam_role.ecs_events_run_task.arn
-  input     = data.template_file.php_artisan_inspire.rendered
+  input     = data.template_file.php_artisan_scheduler.rendered
   ecs_target {
     launch_type         = "FARGATE"
     task_count          = 1
     task_definition_arn = replace(aws_ecs_task_definition.main.arn, "/:[0-9]+$/", "")
     network_configuration {
-      # assign_public_ip = true
       security_groups = var.sg
       subnets         = var.placement_subnet
     }
