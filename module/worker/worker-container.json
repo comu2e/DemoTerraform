@@ -39,7 +39,7 @@
         "healthCheck": {
             "command": [
                 "CMD-SHELL",
-                "sh health.sh|| exit 1"
+                "php artisan -V|| exit 1"
             ],
             "timeout": 5,
             "retries": 3
