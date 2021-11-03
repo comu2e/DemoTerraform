@@ -21,7 +21,7 @@ resource "aws_ecs_service" "main" {
   #   depends_on = [aws_lb_listener_rule.main]
 
   name = "${var.app_name}-${var.entry_container_name}"
-
+  enable_execute_command = true
   launch_type      = "FARGATE"
   platform_version = "1.4.0"
 
