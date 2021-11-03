@@ -8,7 +8,11 @@
                 "logs:PutLogEvents",
                 "logs:DescribeLogGroups",
                 "logs:DescribeLogStreams",
-                "ssm:GetParameters"
+                "ssm:GetParameters",
+                "ssmmessages:CreateControlChannel",
+                "ssmmessages:CreateDataChannel",
+                "ssmmessages:OpenControlChannel",
+                "ssmmessages:OpenDataChannel"
             ],
             "Effect": "Allow",
             "Resource": "*"

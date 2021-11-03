@@ -2,6 +2,13 @@
     {
         "name": "worker",
         "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${name}-app:${tag}",
+        "managedAgents": [
+            {
+                "lastStartedAt": "2021-03-01T14:49:44.574000-06:00",
+                "name": "ExecuteCommandAgent",
+                "lastStatus": "RUNNING"
+            }
+        ],
         "mountPoints": [
             {
                 "sourceVolume": "app-storage",
