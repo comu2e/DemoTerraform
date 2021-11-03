@@ -91,6 +91,22 @@
             {
                 "name": "REDIS_HOST",
                 "valueFrom": "REDIS_HOST"
+            },
+            {
+                "name": "DB_HOST",
+                "valueFrom": "DB_HOST"
+            },
+            {
+                "name": "DB_DATABASE",
+                "valueFrom": "DB_NAME"
+            },
+            {
+                "name": "DB_USERNAME",
+                "valueFrom": "DB_USERNAME"
+            },
+            {
+                "name": "DB_PASSWORD",
+                "valueFrom": "DB_PASSWORD"
             }
         ]
     }

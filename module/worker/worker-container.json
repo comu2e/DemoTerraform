@@ -2,6 +2,12 @@
     {
         "name": "worker",
         "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${name}-app:${tag}",
+        "command": [
+            "php",
+            "artisan",
+            "queue:work",
+            "--tries=1"
+        ],
         "managedAgents": [
             {
                 "lastStartedAt": "2021-03-01T14:49:44.574000-06:00",
@@ -68,6 +74,22 @@
             {
                 "name": "REDIS_HOST",
                 "valueFrom": "REDIS_HOST"
+            },
+            {
+                "name": "DB_HOST",
+                "valueFrom": "DB_HOST"
+            },
+            {
+                "name": "DB_DATABASE",
+                "valueFrom": "DB_NAME"
+            },
+            {
+                "name": "DB_USERNAME",
+                "valueFrom": "DB_USERNAME"
+            },
+            {
+                "name": "DB_PASSWORD",
+                "valueFrom": "DB_PASSWORD"
             }
         ]
     }
