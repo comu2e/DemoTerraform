@@ -1,7 +1,7 @@
 [
     {
         "name": "worker",
-        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${name}-app:${tag}",
+        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${name}:${tag}",
         "command": [
             "php",
             "artisan",
