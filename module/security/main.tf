@@ -48,6 +48,75 @@ resource "aws_security_group_rule" "worker_ingress" {
   to_port           = 6379
   protocol          = "tcp"
 }
+
+resource "aws_security_group" "redis_ecs" {
+  name        = "${var.app_name}-redis_ecs"
+  description = "${var.app_name}-redis_ecs"
+  egress {
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 6379
+    to_port     = 6379
+    protocol    = "tcp"
+  }
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 6379
+    to_port     = 6379
+    protocol    = "tcp"
+  }
+  vpc_id = var.vpc_id
+  tags = {
+    Name = "${var.app_name}-redis_ecs"
+  }
+}
+
+
+resource "aws_security_group" "ses_ecs" {
+  name   = "allow_ses"
+  vpc_id = var.vpc_id
+  ingress {
+    from_port   = 25
+    to_port     = 25
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = 465
+    to_port     = 465
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 465
+    to_port     = 465
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = 587
+    to_port     = 587
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 2465
+    to_port     = 2465
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = 2587
+    to_port     = 2587
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+}
+
+
+
 #================================ 
 # ECSのエンドポイント設定
 # https://zenn.dev/samuraikun/articles/0d22699a9878cd
@@ -152,7 +221,17 @@ resource "aws_vpc_endpoint" "ssm" {
     "Name" = "private-ssm"
   }
 }
-
+resource "aws_vpc_endpoint" "ses" {
+  vpc_id              = var.vpc_id
+  service_name        = "com.amazonaws.ap-northeast-1.qldb.session"
+  vpc_endpoint_type   = "Interface"
+  subnet_ids          = var.private_subnet
+  security_group_ids  = [aws_security_group.ecs_endpoint.id]
+  private_dns_enabled = true
+  tags = {
+    "Name" = "private-ses"
+  }
+}
 # SSH
 
 resource "aws_security_group" "ssh" {
@@ -183,35 +262,8 @@ resource "aws_security_group_rule" "egress_ssh" {
   protocol          = "-1"
 }
 
-# Redis-security group
-resource "aws_security_group" "redis" {
-  name        = "${var.app_name}-redis"
-  description = "${var.app_name}-redis"
-  vpc_id      = var.vpc_id
+# Redis-security grou
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "${var.app_name}-redis"
-  }
-}
-
-resource "aws_security_group_rule" "redis" {
-  security_group_id = aws_security_group.redis.id
-
-  type = "ingress"
-
-  from_port   = 6379
-  to_port     = 6379
-  protocol    = "tcp"
-  cidr_blocks = ["10.10.0.0/16"]
-  # cidr_blocks = var.private_subnet_cidrs
-}
 #RDB
 resource "aws_security_group" "db" {
   name        = "${var.app_name}-db"
