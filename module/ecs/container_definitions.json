@@ -57,7 +57,7 @@
             "logDriver": "awslogs",
             "options": {
                 "awslogs-region": "${region}",
-                "awslogs-group": "/${name}/app",
+                "awslogs-group": "/${name}/app-ngix",
                 "awslogs-stream-prefix": "ecs/app"
             }
         },
@@ -76,6 +76,10 @@
             },
             {
                 "name": "CACHE_DRIVER",
+                "value": "redis"
+            },
+            {
+                "name": "QUEUE_DRIVER",
                 "value": "redis"
             },
             {
