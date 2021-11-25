@@ -5,10 +5,9 @@ resource "aws_elasticache_subnet_group" "main" {
 }
 
 resource "aws_elasticache_cluster" "main" {
-  cluster_id         = var.app_name
-  subnet_group_name  = aws_elasticache_subnet_group.main.name
-  security_group_ids = [var.redis_sg_id]
-
+  cluster_id           = var.app_name
+  subnet_group_name    = aws_elasticache_subnet_group.main.name
+  security_group_ids   = [var.redis_sg_id]
   engine               = "redis"
   engine_version       = "5.0.6"
   port                 = 6379

@@ -12,7 +12,8 @@
                 "ssmmessages:CreateControlChannel",
                 "ssmmessages:CreateDataChannel",
                 "ssmmessages:OpenControlChannel",
-                "ssmmessages:OpenDataChannel"
+                "ssmmessages:OpenDataChannel",
+                "ses:*"
             ],
             "Effect": "Allow",
             "Resource": "*"

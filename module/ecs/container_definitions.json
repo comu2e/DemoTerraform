@@ -36,7 +36,7 @@
     },
     {
         "name": "app",
-        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${name}-app:${tag}",
+        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${name}:${tag}",
         "managedAgents": [
             {
                 "lastStartedAt": "2021-03-01T14:49:44.574000-06:00",
@@ -76,6 +76,10 @@
             },
             {
                 "name": "CACHE_DRIVER",
+                "value": "redis"
+            },
+            {
+                "name": "QUEUE_DRIVER",
                 "value": "redis"
             },
             {
