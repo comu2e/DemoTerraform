@@ -3,6 +3,7 @@
 ## 概要
 ECS Fargate をTerraformで作成したサンプルになります。
 
+＊ SESは手動で設定しています。
 
 ## 実行環境
 - Terraform/v1.0.8
@@ -35,10 +36,12 @@ terraform plan
 terraform apply
 ```
 ## 構成図
-![aws](https://user-images.githubusercontent.com/5231283/139445756-21ff452d-86bc-4469-b7b0-49c816064e19.png)
+![aws](https://user-images.githubusercontent.com/5231283/143464714-7c71b47c-73b8-49e9-978f-d952eb225553.png)
 
 ## Todo 
 - https化(ALB,Route53の設定)
 - Cacheサービスの選定(SQS/Elastic Cacheなど)
 - CloudFront(必要に応じて）
 - CI/CD(nginx-phpfpmレポジトリ)
+- リファクタリング(Cloudmapは現時点では不要)
+- Frontendの追加

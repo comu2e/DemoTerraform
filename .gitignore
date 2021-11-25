@@ -11,3 +11,4 @@
 
 #SSH接続用キー　サンプル用だがgitignoreしておく
 ./module/compute/ec2/*
+.DS_Store

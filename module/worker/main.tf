@@ -120,19 +120,19 @@ resource "aws_cloudwatch_log_group" "main" {
   retention_in_days = 7
 }
 
-# Task Scheduler
-resource "aws_cloudwatch_event_rule" "scheduler" {
-  description         = "run php artisan scheduler every minutes"
+# Task Schedule
+resource "aws_cloudwatch_event_rule" "schedule" {
+  description         = "run php artisan schedule every minutes"
   is_enabled          = true
-  name                = "scheduler_every_minutes"
+  name                = "schedule_every_minutes"
   schedule_expression = "cron(* * * * ? *)"
 }
 
-data "template_file" "php_artisan_scheduler" {
+data "template_file" "php_artisan_schedule" {
   template = file(abspath("./module/worker/ecs_container_overrides.json"))
 
   vars = {
-    command = "scheduler:run"
+    command = "schedule:run"
     # option  = "--tries=1"
   }
 }
@@ -143,12 +143,12 @@ variable "vpc_id" {
   type = string
 }
 
-resource "aws_cloudwatch_event_target" "scheduler" {
-  rule      = aws_cloudwatch_event_rule.scheduler.name
+resource "aws_cloudwatch_event_target" "schedule" {
+  rule      = aws_cloudwatch_event_rule.schedule.name
   arn       = var.cluster_arn
-  target_id = "scheduler"
+  target_id = "schedule"
   role_arn  = aws_iam_role.ecs_events_run_task.arn
-  input     = data.template_file.php_artisan_scheduler.rendered
+  input     = data.template_file.php_artisan_schedule.rendered
   ecs_target {
     launch_type         = "FARGATE"
     task_count          = 1

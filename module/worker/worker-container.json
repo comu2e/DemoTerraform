@@ -1,7 +1,7 @@
 [
     {
         "name": "worker",
-        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${name}-app:${tag}",
+        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${name}:${tag}",
         "command": [
             "php",
             "artisan",
@@ -21,25 +21,18 @@
                 "containerPath": "/app"
             }
         ],
-        "portMappings": [
-            {
-                "containerPort": 6379,
-                "hostPort": 6379,
-                "protocol": "tcp"
-            }
-        ],
         "logConfiguration": {
             "logDriver": "awslogs",
             "options": {
                 "awslogs-region": "${region}",
                 "awslogs-group": "/${name}/worker",
-                "awslogs-stream-prefix": "ecs"
+                "awslogs-stream-prefix": "ecs/worker"
             }
         },
         "healthCheck": {
             "command": [
                 "CMD-SHELL",
-                "php artisan -V|| exit 1"
+                "php artisan -v|| exit 1"
             ],
             "timeout": 5,
             "retries": 3
@@ -64,6 +57,22 @@
             {
                 "name": "QUEUE_CONNECTION",
                 "value": "redis"
+            },
+            {
+                "name": "MAIL_DRIVER",
+                "value": "ses"
+            },
+            {
+                "name": "MAIL_FROM_ADDRESS",
+                "value": "comu2e+ses@gmail.com"
+            },
+            {
+                "name": "MAIL_FROM_NAME",
+                "value": "takahashi-worker"
+            },
+            {
+                "name": "SES_REGION",
+                "value": "ap-northeast-1"
             }
         ],
         "secrets": [
@@ -90,6 +99,14 @@
             {
                 "name": "DB_PASSWORD",
                 "valueFrom": "DB_PASSWORD"
+            },
+            {
+                "name": "SES_KEY",
+                "valueFrom": "SES_KEY"
+            },
+            {
+                "name": "SES_SECRET",
+                "valueFrom": "SES_SECRET"
             }
         ]
     }
