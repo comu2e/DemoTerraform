@@ -1,18 +1,27 @@
 # usage:
-# $ make terraform ENV=(dev or prod) ARGS=init
-# $ make terrafomr ENV=(dev or prod) ARGS=apply
+# $ make init ENV=(dev or prod)
+# $ make plan ENV=(dev or prod)
+# $ make apply ENV=(dev or prod)
 # args:
 # ENV: Direvtory to run apply or init in.
-# ARGS:Specify terraform command.
-# BUCKET_NAME : tfstate Storage.
-# PROFILE : AWS profile
+
 REGION = ap-northeast-1
-CD = [[ -d env/${ENV} ]] && cd env/${ENV}
 ENV = $1
+SCOPE := env/${ENV} 
+CD = [[ -d $(SCOPE) ]] && cd $(SCOPE)
+
+.PHONY: all init
+
+all:
+	@more Makefile
 
 init:
 	@${CD} && \
 		terraform init
+
+plan:
+	@${CD} && \
+		terraform plan
 
 migrate:
 	@${CD} && \
