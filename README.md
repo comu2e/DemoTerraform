@@ -11,7 +11,11 @@ ECS Fargate をTerraformで作成したサンプルになります。
 - Python/3.9.7
 
 ## 初期設定
-tfstateのリモート保存先設定
+tfstateのリモート保存先設定(S3荷バケット作成)
+```
+# Parameter storeへの値設定
+ aws ssm put-parameter --type SecureString --overwrite --name "/${app_nameを入力}/該当するキー" --value "該当する値" --allowed-pattern "\d{1,4}" --value 100
+```
 ## 実行方法
 ```make terraform ENV=dev ARGS=init
 ```make terraform ENV=dev ARGS=apply

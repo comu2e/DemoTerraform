@@ -74,12 +74,12 @@ module "cloudmap" {
   vpc_id   = module.network.vpc_id
 }
 module "ecs_worker" {
-  source = "../../module/worker"
-  entry_container_name = "worker"
-  entry_container_port = 6379
-  app_name             = "app"
-  cluster              = aws_ecs_cluster.main.name
-  placement_subnet     = module.network.private_subnet_ids
+  source                         = "../../module/worker"
+  entry_container_name           = "worker"
+  entry_container_port           = 6379
+  app_name                       = "app"
+  cluster                        = aws_ecs_cluster.main.name
+  placement_subnet               = module.network.private_subnet_ids
   aws_iam_role_task_exection_arn = module.iam.aws_iam_role_task_exection_arn
   sg = [
     module.sg.http_sg_id,
