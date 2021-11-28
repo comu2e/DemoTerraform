@@ -10,6 +10,7 @@ ENV = $1
 SCOPE := env/${ENV} 
 CD = [[ -d $(SCOPE) ]] && cd $(SCOPE)
 
+
 .PHONY: all init
 
 all:
@@ -30,4 +31,3 @@ migrate:
 apply:
 	@${CD} && \
 		terraform apply
-
