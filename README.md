@@ -24,7 +24,6 @@ $ aws s3 mb s3://tfstate-${var.app_name}
 - 機密情報などはAWSのParameterStoreを使用してください。
   （RDSのデータベース、ユーザー名、パスワードの管理に今回は使用しています）
 
-
 ```
 $ aws ssm put-parameter --type SecureString --overwrite --name "/${app_nameを入力}/該当するキー" --value "該当する値" --allowed-pattern "\d{1,4}" --value 100
 ```
@@ -46,14 +45,12 @@ https://github.com/comu2e/nginx-php-Sample
 ## 実行方法
 
 ```
-$ make terraform ENV=dev ARGS=init
-$ make terraform ENV=dev ARGS=apply
+$ make init ENV=dev 
+$ make plan ENV=dev
+$ make apply ENV=dev
 ```
 変更時は上記のDockerfile,confファイルなどを使用用途に合わせて変更するとともに、
 container-defition.jsonを変更してください。
-
-
-
 
 ## 構成図
 ![aws](https://user-images.githubusercontent.com/5231283/143753728-45549b82-2098-492f-a014-6b23c05f510f.png)
