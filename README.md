@@ -41,7 +41,7 @@ terraform plan
 terraform apply
 ```
 ## 構成図
-![aws](https://user-images.githubusercontent.com/5231283/143733488-f27e6b97-9d9b-4411-a77f-4fbbe4759b1d.png)
+![aws](https://user-images.githubusercontent.com/5231283/143753728-45549b82-2098-492f-a014-6b23c05f510f.png)
 
 ## Todo 
 - https化(ALB,Route53の設定)
