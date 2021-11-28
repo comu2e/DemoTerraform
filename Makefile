@@ -6,27 +6,19 @@
 # ARGS:Specify terraform command.
 # BUCKET_NAME : tfstate Storage.
 # PROFILE : AWS profile
-BUCKET_NAME = hoge
 REGION = ap-northeast-1
 CD = [[ -d env/${ENV} ]] && cd env/${ENV}
 ENV = $1
-ARGS = $2
-PROFILE = $3
 
-terraform:
+init:
 	@${CD} && \
-		terraform ${ARGS}
+		terraform init
 
-remote-enable:
+migrate:
 	@${CD} && \
-		terraform remote config \
-		-backend=s3 \
-		-backend-config='bucket=${BUCKET_NAME}' \
-		-backend-config='key=${ENV}/terraform.tfstate' \
-		-backend-config='region=${REGION}' \
-		-backend-config='profile=${PROFILE}'
+		terraform init -migrate-state
 
-remote-disable:
+apply:
 	@${CD} && \
-		terraform remote config \
-		-disable
+		terraform apply
+
