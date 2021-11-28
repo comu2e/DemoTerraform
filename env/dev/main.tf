@@ -59,7 +59,7 @@ module "ecs_app" {
   task_definition_file_path      = "../../module/ecs/container_definitions.json"
   entry_container_name           = "nginx"
   entry_container_port           = 80
-  app_name                       = var.app_name
+  app_name                       = "app"
   cluster                        = aws_ecs_cluster.main.name
   placement_subnet               = module.network.private_subnet_ids
   target_group_arn               = module.alb.aws_lb_target_group
@@ -75,13 +75,11 @@ module "cloudmap" {
 }
 module "ecs_worker" {
   source = "../../module/worker"
-  # task_definition_file_path      = "../../module/ecs/container_definitions.json"
   entry_container_name = "worker"
   entry_container_port = 6379
-  app_name             = var.app_name
+  app_name             = "app"
   cluster              = aws_ecs_cluster.main.name
   placement_subnet     = module.network.private_subnet_ids
-  # target_group_arn               = module.alb.aws_lb_target_group
   aws_iam_role_task_exection_arn = module.iam.aws_iam_role_task_exection_arn
   sg = [
     module.sg.http_sg_id,
