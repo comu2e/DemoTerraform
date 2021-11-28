@@ -90,27 +90,27 @@
         "secrets": [
             {
                 "name": "APP_KEY",
-                "valueFrom": "APP_KEY"
+                "valueFrom": "/${name}/APP_KEY"
             },
             {
                 "name": "REDIS_HOST",
-                "valueFrom": "REDIS_HOST"
+                "valueFrom": "/${name}/REDIS_HOST"
             },
             {
                 "name": "DB_HOST",
-                "valueFrom": "DB_HOST"
+                "valueFrom": "/${name}/DB_HOST"
             },
             {
                 "name": "DB_DATABASE",
-                "valueFrom": "DB_NAME"
+                "valueFrom": "/${name}/DB_DATABASE"
             },
             {
                 "name": "DB_USERNAME",
-                "valueFrom": "DB_USERNAME"
+                "valueFrom": "/${name}/DB_USERNAME"
             },
             {
                 "name": "DB_PASSWORD",
-                "valueFrom": "DB_PASSWORD"
+                "valueFrom": "/${name}/DB_PASSWORD"
             }
         ]
     }

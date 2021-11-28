@@ -20,6 +20,6 @@ output "ecs_exec_role" {
   value = module.iam.aws_iam_role_task_exection_arn
 }
 
-output "redi_hosename" {
+output "redis_hostname" {
   value = module.redis.redis_hostname
 }

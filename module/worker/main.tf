@@ -50,7 +50,7 @@ locals {
 }
 
 data "template_file" "container_definitions" {
-  template = file(abspath("./module/worker/worker-container.json"))
+  template = file(abspath("../../module/worker/worker-container.json"))
   # templateのjsonファイルに値を渡す
   vars = {
     tag                  = "latest"
@@ -129,7 +129,7 @@ resource "aws_cloudwatch_event_rule" "schedule" {
 }
 
 data "template_file" "php_artisan_schedule" {
-  template = file(abspath("./module/worker/ecs_container_overrides.json"))
+  template = file(abspath("../../module/worker/ecs_container_overrides.json"))
 
   vars = {
     command = "schedule:run"

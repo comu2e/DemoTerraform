@@ -1,6 +1,6 @@
 variable "app_name" {
   type    = string
-  default = "app"
+  default = "app-dev"
 }
 variable "azs" {
   type    = list(string)
