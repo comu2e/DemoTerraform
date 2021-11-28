@@ -25,7 +25,7 @@ $ aws s3 mb s3://tfstate-${var.app_name}
   （RDSのデータベース、ユーザー名、パスワードの管理に今回は使用しています）
 
 ```
-$ aws ssm put-parameter --type SecureString --overwrite --name "/${app_nameを入力}/該当するキー" --value "該当する値" --allowed-pattern "\d{1,4}" --value 100
+$ aws ssm put-parameter --type SecureString --name "/${app_nameを入力}/該当するキー" --value "該当する値"  --overwrite
 ```
 ### ④　秘密鍵の作成
 

@@ -105,11 +105,6 @@ resource "aws_ecs_service" "main" {
     assign_public_ip = true
   }
 
-  #   load_balancer {
-  #     target_group_arn = var.target_group_arn
-  #     container_name   = var.entry_container_name
-  #     container_port   = var.entry_container_port
-  #   }
   service_registries {
     registry_arn = var.service_registries_arn
   }
@@ -124,8 +119,11 @@ resource "aws_cloudwatch_log_group" "main" {
 resource "aws_cloudwatch_event_rule" "schedule" {
   description         = "run php artisan schedule every minutes"
   is_enabled          = true
-  name                = "schedule_every_minutes"
+  name                = "${var.app_name}-schedule_every_minutes"
   schedule_expression = "cron(* * * * ? *)"
+  tags = {
+    "Name" = "${var.app_name}-cloudwatch-event-rule-worker"
+  }
 }
 
 data "template_file" "php_artisan_schedule" {
@@ -133,7 +131,6 @@ data "template_file" "php_artisan_schedule" {
 
   vars = {
     command = "schedule:run"
-    # option  = "--tries=1"
   }
 }
 variable "cluster_arn" {
@@ -173,8 +170,9 @@ data "aws_iam_policy_document" "events_assume_role" {
 }
 
 resource "aws_iam_role" "ecs_events_run_task" {
-  name               = "ECSEventsRunTask"
+  name               = "${var.app_name}-ECSEventsRunTask"
   assume_role_policy = data.aws_iam_policy_document.events_assume_role.json
+
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_events_run_task" {
