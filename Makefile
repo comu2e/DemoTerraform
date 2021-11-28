@@ -31,3 +31,7 @@ migrate:
 apply:
 	@${CD} && \
 		terraform apply
+		
+destroy:
+	@${CD} && \
+		terraform destroy

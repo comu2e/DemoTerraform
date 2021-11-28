@@ -48,22 +48,22 @@ resource "aws_rds_cluster_instance" "postgresql" {
 
   # tags
   tags = {
-    Service = "sample"
+    Service = "${var.app_name}"
   }
 }
 # aws_db_parameter_group
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_parameter_group
 resource "aws_db_parameter_group" "postgresql" {
-  name   = "sample-aurora-postgre-pg"
+  name   = "${var.app_name}-aurora-postgre-pg"
   family = "aurora-postgresql11"
   tags = {
-    Service = "sample"
+    Service = "${var.app_name}"
   }
 }
 # aws_iam_role
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role
 resource "aws_iam_role" "postgresql" {
-  name               = "sample-rds-monitoring-role"
+  name               = "${var.app_name}-rds-monitoring-role"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -80,8 +80,8 @@ resource "aws_iam_role" "postgresql" {
 EOF
 
   tags = {
-    Name    = "sample-rds-monitoring-role"
-    Service = "sample"
+    Name    = "${var.app_name}-rds-monitoring-role"
+    Service = "${var.app_name}"
   }
 }
 
