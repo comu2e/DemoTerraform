@@ -1,0 +1,6 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory `/Users/takahashi.eiji/VisualStudio/Terraform'
+[[ -d env/ ]] && cd env/ && \
+		terraform 
+make: Leaving directory `/Users/takahashi.eiji/VisualStudio/Terraform'
+ 

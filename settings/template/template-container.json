@@ -1,0 +1,46 @@
+[
+    {
+        "name": "app",
+        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${name}:${tag}",
+        "managedAgents": [
+            {
+                "lastStartedAt": "2021-03-01T14:49:44.574000-06:00",
+                "name": "ExecuteCommandAgent",
+                "lastStatus": "RUNNING"
+            }
+        ],
+        "linuxParameters": {
+            "initProcessEnabled": true
+        },
+        "mountPoints": [
+            {
+                "sourceVolume": "app-storage",
+                "containerPath": "/app"
+            }
+        ],
+        "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+                "awslogs-region": "${region}",
+                "awslogs-group": "/${name}/${task-name}",
+                "awslogs-stream-prefix": "ecs/app"
+            }
+        },
+        "environment": [
+            {
+                "name": "APP_ENV",
+                "value": "production"
+            },
+            {
+                "name": "LOG_CHANNEL",
+                "value": "stderr"
+            }
+        ],
+        "secrets": [
+            {
+                "name": "APP_KEY",
+                "valueFrom": "/${name}/APP_KEY"
+            }
+        ]
+    }
+]
