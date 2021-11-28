@@ -13,6 +13,9 @@ ECS Fargate をTerraformで作成したサンプルになります。
 ## 初期設定
 tfstateのリモート保存先設定
 ## 実行方法
+```make terraform ENV=dev ARGS=init
+```make terraform ENV=dev ARGS=apply
+```
 - aws cliで使用するAWSで環境の設定をしておいてください。
 - ec2の踏み台サーバーの鍵はec2/key内に
 ```ssh-keygen```
