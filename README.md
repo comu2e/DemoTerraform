@@ -47,7 +47,7 @@ https://github.com/comu2e/nginx-php-Sample
 
 ```
 $ make terraform ENV=dev ARGS=init
-`$ make terraform ENV=dev ARGS=apply
+$ make terraform ENV=dev ARGS=apply
 ```
 変更時は上記のDockerfile,confファイルなどを使用用途に合わせて変更するとともに、
 container-defition.jsonを変更してください。
