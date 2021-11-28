@@ -16,7 +16,7 @@ envディレクトリ内に環境のmain,output,variables.tf,backend.tfを作成
 tfstateのリモート保存先設定(S3荷バケット作成)
 
 ### ②　S3 bucket作成：
-#variables.tfのapp_nameでアプリ名とと環境名を設定しておく。
+variables.tfのapp_nameでアプリ名と環境名がわかるように設定しておく。
 ```
 $ aws s3 mb s3://tfstate-${var.app_name} 
 ```
