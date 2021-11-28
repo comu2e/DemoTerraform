@@ -10,6 +10,8 @@ ECS Fargate をTerraformで作成したサンプルになります。
 - aws-cli/2.2.43 
 - Python/3.9.7
 
+## 初期設定
+tfstateのリモート保存先設定
 ## 実行方法
 - aws cliで使用するAWSで環境の設定をしておいてください。
 - ec2の踏み台サーバーの鍵はec2/key内に
