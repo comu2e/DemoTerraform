@@ -1,7 +1,7 @@
 [
     {
         "name": "nginx",
-        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${name}-nginx:${tag}",
+        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/app-nginx:${tag}",
         "portMappings": [
             {
                 "containerPort": 80,
@@ -36,7 +36,7 @@
     },
     {
         "name": "app",
-        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${name}:${tag}",
+        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/app:${tag}",
         "managedAgents": [
             {
                 "lastStartedAt": "2021-03-01T14:49:44.574000-06:00",
