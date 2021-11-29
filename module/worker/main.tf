@@ -173,7 +173,7 @@ data "aws_iam_policy_document" "events_assume_role" {
 }
 
 resource "aws_iam_role" "ecs_events_run_task" {
-  name               = "ECSEventsRunTask"
+  name               = "${var.app_name}-ECSEventsRunTask"
   assume_role_policy = data.aws_iam_policy_document.events_assume_role.json
 }
 

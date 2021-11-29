@@ -112,7 +112,9 @@ resource "aws_security_group" "ses_ecs" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
+  tags = {
+    "Name" = "${var.app_name}-ses"
+  }
 }
 
 
@@ -134,6 +136,9 @@ resource "aws_vpc_endpoint" "s3" {
   vpc_id            = var.vpc_id
   service_name      = "com.amazonaws.ap-northeast-1.s3"
   vpc_endpoint_type = "Gateway"
+  tags = {
+    "Name" = "${var.app_name}-s3-endpoint"
+  }
 }
 resource "aws_vpc_endpoint_route_table_association" "private_s3" {
   count           = length(var.private_subnet)
@@ -159,7 +164,7 @@ resource "aws_security_group" "ecs_endpoint" {
     cidr_blocks = [var.vpc_cidr]
   }
   tags = {
-    "Name" = "ECS Endpoint"
+    "Name" = "${var.app_name}-ecsEndpoint"
   }
 }
 resource "aws_security_group_rule" "ecs_endpoint" {
@@ -182,7 +187,7 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
   security_group_ids  = [aws_security_group.ecs_endpoint.id]
   private_dns_enabled = true
   tags = {
-    "Name" = "private-ECR_DKR"
+    "Name" = "${var.app_name}-private-ECR_DKR"
   }
 }
 
@@ -194,7 +199,7 @@ resource "aws_vpc_endpoint" "ecr_api" {
   security_group_ids  = [aws_security_group.ecs_endpoint.id]
   private_dns_enabled = true
   tags = {
-    "Name" = "private-ECR_API"
+    "Name" = "${var.app_name}-private-ECR_API"
   }
 }
 
@@ -206,7 +211,7 @@ resource "aws_vpc_endpoint" "logs" {
   security_group_ids  = [aws_security_group.ecs_endpoint.id]
   private_dns_enabled = true
   tags = {
-    "Name" = "private-logs"
+    "Name" = "${var.app_name}-private-logs"
   }
 }
 
@@ -218,7 +223,7 @@ resource "aws_vpc_endpoint" "ssm" {
   security_group_ids  = [aws_security_group.ecs_endpoint.id]
   private_dns_enabled = true
   tags = {
-    "Name" = "private-ssm"
+    "Name" = "${var.app_name}-private-ssm"
   }
 }
 resource "aws_vpc_endpoint" "ses" {
@@ -229,7 +234,7 @@ resource "aws_vpc_endpoint" "ses" {
   security_group_ids  = [aws_security_group.ecs_endpoint.id]
   private_dns_enabled = true
   tags = {
-    "Name" = "private-ses"
+    "Name" = "${var.app_name}-private-ses"
   }
 }
 # SSH
