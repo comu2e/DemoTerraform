@@ -7,7 +7,7 @@
 
 REGION = ap-northeast-1
 ENV = $1
-SCOPE := env/${ENV} 
+SCOPE := src/${ENV} 
 CD = [[ -d $(SCOPE) ]] && cd $(SCOPE)
 
 
