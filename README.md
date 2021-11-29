@@ -23,10 +23,11 @@ $ aws s3 mb s3://tfstate-${var.app_name}
 ### ③　Parameter storeへの値設定
 - 機密情報などはAWSのParameterStoreを使用してください。
   （RDSのデータベース、ユーザー名、パスワードの管理に今回は使用しています）
-
 ```
 $ aws ssm put-parameter --type SecureString --name "/${app_nameを入力}/該当するキー" --value "該当する値"  --overwrite
 ```
+（Todo:.env.*に環境変数を記載してshでaws cliを実行できるようにする。）
+
 ### ④　秘密鍵の作成
 
 - aws cliで使用するAWSで環境の設定をしておいてください。
