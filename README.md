@@ -9,7 +9,7 @@ ECS Fargate をTerraformで作成したサンプルになります。
 ## 初期設定
 ### ①　環境ごとのファイル作成
 
-envディレクトリ内に環境のmain,output,variables.tf,backend.tfを作成する。
+srcディレクトリ内に環境のmain,output,variables.tf,backend.tfを作成する。
 
 各環境の差分はvariablesで管理するようにしている。
 

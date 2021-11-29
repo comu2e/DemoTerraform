@@ -1,113 +1,113 @@
 [
-    {
-        "name": "worker",
-        "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/app:${tag}",
-        "command": [
-            "php",
-            "artisan",
-            "queue:work",
-            "--tries=1"
-        ],
-        "managedAgents": [
-            {
-                "lastStartedAt": "2021-03-01T14:49:44.574000-06:00",
-                "name": "ExecuteCommandAgent",
-                "lastStatus": "RUNNING"
-            }
-        ],
-        "mountPoints": [
-            {
-                "sourceVolume": "app-storage",
-                "containerPath": "/app"
-            }
-        ],
-        "logConfiguration": {
-            "logDriver": "awslogs",
-            "options": {
-                "awslogs-region": "${region}",
-                "awslogs-group": "/${name}/worker",
-                "awslogs-stream-prefix": "ecs/worker"
-            }
-        },
-        "healthCheck": {
-            "command": [
-                "CMD-SHELL",
-                "php artisan -v|| exit 1"
-            ],
-            "timeout": 5,
-            "retries": 3
-        },
-        "environment": [
-            {
-                "name": "APP_ENV",
-                "value": "production"
-            },
-            {
-                "name": "LOG_CHANNEL",
-                "value": "stderr"
-            },
-            {
-                "name": "SESSION_DRIVER",
-                "value": "redis"
-            },
-            {
-                "name": "CACHE_DRIVER",
-                "value": "redis"
-            },
-            {
-                "name": "QUEUE_CONNECTION",
-                "value": "redis"
-            },
-            {
-                "name": "MAIL_DRIVER",
-                "value": "ses"
-            },
-            {
-                "name": "MAIL_FROM_ADDRESS",
-                "value": "comu2e+ses@gmail.com"
-            },
-            {
-                "name": "MAIL_FROM_NAME",
-                "value": "takahashi-worker"
-            },
-            {
-                "name": "SES_REGION",
-                "value": "ap-northeast-1"
-            }
-        ],
-        "secrets": [
-            {
-                "name": "APP_KEY",
-                "valueFrom": "/${name}/APP_KEY"
-            },
-            {
-                "name": "REDIS_HOST",
-                "valueFrom": "/${name}/REDIS_HOST"
-            },
-            {
-                "name": "DB_HOST",
-                "valueFrom": "/${name}/DB_HOST"
-            },
-            {
-                "name": "DB_DATABASE",
-                "valueFrom": "/${name}/DB_DATABASE"
-            },
-            {
-                "name": "DB_USERNAME",
-                "valueFrom": "/${name}/DB_USERNAME"
-            },
-            {
-                "name": "DB_PASSWORD",
-                "valueFrom": "/${name}/DB_PASSWORD"
-            },
-            {
-                "name": "SES_KEY",
-                "valueFrom": "/${name}/SES_KEY"
-            },
-            {
-                "name": "SES_SECRET",
-                "valueFrom": "/${name}/SES_SECRET"
-            }
-        ]
-    }
+  {
+    "name": "worker",
+    "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/app:${tag}",
+    "command": [
+      "php",
+      "artisan",
+      "queue:work",
+      "--tries=1"
+    ],
+    "managedAgents": [
+      {
+        "lastStartedAt": "2021-03-01T14:49:44.574000-06:00",
+        "name": "ExecuteCommandAgent",
+        "lastStatus": "RUNNING"
+      }
+    ],
+    "mountPoints": [
+      {
+        "sourceVolume": "app-storage",
+        "containerPath": "/app"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-region": "${region}",
+        "awslogs-group": "/${name}/worker",
+        "awslogs-stream-prefix": "ecs/${name}"
+      }
+    },
+    "healthCheck": {
+      "command": [
+        "CMD-SHELL",
+        "php artisan -v|| exit 1"
+      ],
+      "timeout": 5,
+      "retries": 3
+    },
+    "environment": [
+      {
+        "name": "APP_ENV",
+        "value": "production"
+      },
+      {
+        "name": "LOG_CHANNEL",
+        "value": "stderr"
+      },
+      {
+        "name": "SESSION_DRIVER",
+        "value": "redis"
+      },
+      {
+        "name": "CACHE_DRIVER",
+        "value": "redis"
+      },
+      {
+        "name": "QUEUE_CONNECTION",
+        "value": "redis"
+      },
+      {
+        "name": "MAIL_DRIVER",
+        "value": "ses"
+      },
+      {
+        "name": "MAIL_FROM_ADDRESS",
+        "value": "comu2e+ses@gmail.com"
+      },
+      {
+        "name": "MAIL_FROM_NAME",
+        "value": "takahashi-worker"
+      },
+      {
+        "name": "SES_REGION",
+        "value": "ap-northeast-1"
+      }
+    ],
+    "secrets": [
+      {
+        "name": "APP_KEY",
+        "valueFrom": "/${name}/APP_KEY"
+      },
+      {
+        "name": "REDIS_HOST",
+        "valueFrom": "/${name}/REDIS_HOST"
+      },
+      {
+        "name": "DB_HOST",
+        "valueFrom": "/${name}/DB_HOST"
+      },
+      {
+        "name": "DB_DATABASE",
+        "valueFrom": "/${name}/DB_DATABASE"
+      },
+      {
+        "name": "DB_USERNAME",
+        "valueFrom": "/${name}/DB_USERNAME"
+      },
+      {
+        "name": "DB_PASSWORD",
+        "valueFrom": "/${name}/DB_PASSWORD"
+      },
+      {
+        "name": "SES_KEY",
+        "valueFrom": "/${name}/SES_KEY"
+      },
+      {
+        "name": "SES_SECRET",
+        "valueFrom": "/${name}/SES_SECRET"
+      }
+    ]
+  }
 ]
