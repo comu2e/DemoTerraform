@@ -13,7 +13,7 @@ srcディレクトリ内に環境のmain,output,variables.tf,backend.tfを作成
 
 各環境の差分はvariablesで管理するようにしている。
 
-tfstateのリモート保存先設定(S3荷バケット作成)
+tfstateのリモート保存先設定(S3にバケット作成)
 
 ### ②　S3 bucket作成：
 variables.tfのapp_nameでアプリ名と環境名がわかるように設定しておく。
@@ -42,7 +42,7 @@ https://github.com/comu2e/nginx-php-Sample
 - LogはCloudFormationで確認できますが、確認のしやすさを高めるためにGrafanaCloudにLogを流せるようにしています。
 使用したい場合はGrafanaCloudのアカウント設定をしてください。
 - SESは手動で設定しています。
-
+- １つの環境ごとにEIPを３つ消費するので、２つ以上の環境を構築する場合はEIPの上限解除をAWSに申請してください。
 ## 実行方法
 
 ```
