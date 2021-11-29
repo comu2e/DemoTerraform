@@ -1,6 +1,6 @@
 output "endpoint" {
-  value = aws_rds_cluster.postgresql.endpoint
+  value = aws_db_instance.main.endpoint
 }
 output "db_private_subnet" {
-  value =aws_rds_cluster.postgresql.db_subnet_group_name
+  value = aws_db_instance.main.db_subnet_group_name
 }

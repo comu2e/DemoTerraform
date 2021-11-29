@@ -13,13 +13,13 @@ variable "private_subnet_ids" {
 }
 # 事前にSSMでパラメータを設定しておく
 data "aws_ssm_parameter" "db_username" {
-  name = "/${var.app_name}/DB_USERNAME"
+  name = "DB_USERNAME"
 }
 data "aws_ssm_parameter" "db_name" {
-  name = "/${var.app_name}/DB_NAME"
+  name = "DB_NAME"
 }
 data "aws_ssm_parameter" "db_password" {
-  name = "/${var.app_name}/DB_PASSWORD"
+  name = "DB_PASSWORD"
 }
 locals {
   db_username = data.aws_ssm_parameter.db_username.value
