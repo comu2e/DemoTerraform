@@ -1,6 +1,6 @@
 
 resource "aws_db_subnet_group" "main" {
-  name        = lower(local.db_name)
+  name        = lower(replace(var.app_name, "-", "_"))
   description = local.db_name
   subnet_ids  = var.private_subnet_ids
 }
