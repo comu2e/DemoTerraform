@@ -29,21 +29,22 @@ $ aws s3 mb s3://tfstate-${var.app_name}
  #### aws.shの使い方
 環境変数を設定するのがめんどくさいので作っています。
 
-①.env.exampleをコピー ```cp .env.example``` .env.dev
+①.env.exampleをコピー ```cp .env.example .env.dev```
 
-② コピーしたファイルを.gitignoreに登録
+② コピーしたファイルを```.gitignore```に登録
 
-③ コピーした.envファイルに値を記述。（REDIS_HOST,DB_HOSTなどはmake apply後に出てくる値なので注意）
+③ コピーした```.env```ファイルに値を記述。（REDIS_HOST,DB_HOSTなどはmake apply後に出てくる値なので注意）
 
-④``` sh aws.sh 環境変数を設定したファイル名 {src/variables.tfに設定した$app_nameと同様の文字列}
-  例:環境変数を設定したenvファイル名 .env.dev
+④ ``` sh aws.sh 環境変数を設定したファイル名 {src/variables.tfに設定した$app_nameと同様の文字列} ```
+  例 ```
+     環境変数を設定したenvファイル名 .env.dev
      $app_nameがapp_dev
-     sh aws.sh .env.dev app_dev
-
+     sh aws.sh .env.dev app_dev 
+     ```
 以上
 
 下記のコマンドを環境変数分実行しています。
-
+```
 $ aws ssm put-parameter --type SecureString --name "/${app_nameを入力}/該当するキー" --value "該当する値"  --overwrite
 ```
 
