@@ -36,11 +36,17 @@ $ aws s3 mb s3://tfstate-${var.app_name}
 ③ コピーした```.env```ファイルに値を記述。（REDIS_HOST,DB_HOSTなどはmake apply後に出てくる値なので注意）
 
 ④ ``` sh aws.sh 環境変数を設定したファイル名 {src/variables.tfに設定した$app_nameと同様の文字列} ```
-  例 ```
-     環境変数を設定したenvファイル名 .env.dev
-     $app_nameがapp_dev
-     sh aws.sh .env.dev app_dev 
-     ```
+  
+  例
+  
+  ```
+  環境変数を設定したenvファイル名 .env.dev
+  
+  $app_nameがapp_dev
+  
+  sh aws.sh .env.dev app_dev 
+  ```
+
 以上
 
 下記のコマンドを環境変数分実行しています。
