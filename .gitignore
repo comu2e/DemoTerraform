@@ -3,6 +3,8 @@
 
 # env
 .env
+.env.dev
+.env.prod
 
 # Terraform
 .terraform
