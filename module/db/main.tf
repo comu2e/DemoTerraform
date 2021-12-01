@@ -12,8 +12,8 @@ resource "aws_db_instance" "main" {
 
   allocated_storage = 10
   engine            = "postgres"
-  engine_version    = "12.5"
-  instance_class    = "db.t3.micro"
+  engine_version    = "11.13"
+  instance_class    = var.instace_type
   port              = 5432
   name              = local.db_name
   username          = local.db_username
