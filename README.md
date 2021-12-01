@@ -28,7 +28,6 @@ $ aws s3 mb s3://tfstate-${var.app_name}
 
  #### aws.shの使い方
 環境変数を設定するのがめんどくさいので作っています。
-
 ①.env.exampleをコピー ```cp .env.example .env.dev```
 
 ② コピーしたファイルを```.gitignore```に登録
