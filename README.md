@@ -34,7 +34,7 @@ $ aws s3 mb s3://tfstate-${var.app_name}
 
 ③ コピーした```.env```ファイルに値を記述。（REDIS_HOST,DB_HOSTなどはmake apply後に出てくる値なので注意）
 
-④ ``` sh aws.sh 環境変数を設定したファイル名 {src/variables.tfに設定した$app_nameと同様の文字列} ```
+④ ```$ sh aws.sh 環境変数を設定したファイル名 {src/variables.tfに設定した$app_nameと同様の文字列} ```
   
   例
   
@@ -43,7 +43,7 @@ $ aws s3 mb s3://tfstate-${var.app_name}
   
   $app_nameがapp_dev
   
-  sh aws.sh .env.dev app_dev 
+  $ sh aws.sh .env.dev app_dev 
   ```
 
 以上
@@ -60,21 +60,22 @@ $ aws ssm put-parameter --type SecureString --name "/${app_nameを入力}/該当
 - ec2の踏み台サーバーの鍵はmodule/compute/template内に
 ```ssh-keygen```で作成するか、すでに作成した公開鍵を登録してください。
 
-- ECRにDockerImageをプッシュしておく。
-今回のサンプルは下記のDocker(nginx/php-fpm)の簡素な構成としています。
-https://github.com/comu2e/nginx-php-Sample
 ### ⑤　その他
 
 - LogはCloudFormationで確認できますが、確認のしやすさを高めるためにGrafanaCloudにLogを流せるようにしています。
 使用したい場合はGrafanaCloudのアカウント設定をしてください。
 - SESは手動で設定しています。
 - １つの環境ごとにEIPを３つ消費するので、２つ以上の環境を構築する場合はEIPの上限解除をAWSに申請してください。
+- ECRにDockerImageをプッシュしておく。
+今回のサンプルは下記のDocker(nginx/php-fpm)の簡素な構成としています。
+https://github.com/comu2e/nginx-php-Sample
+
 ## 実行方法
 
 ```
-$ make init ENV=dev 
-$ make plan ENV=dev
-$ make apply ENV=dev
+$ make init-(dev or prod) 
+$ make plan-(dev or prod)
+$ make apply-(dev or prod)
 ```
 変更時は上記のDockerfile,confファイルなどを使用用途に合わせて変更するとともに、
 container-defition.jsonを変更してください。
