@@ -1,37 +1,36 @@
 # usage:
-# $ make init ENV=(dev or prod)
-# $ make plan ENV=(dev or prod)
-# $ make apply ENV=(dev or prod)
-# args:
-# ENV: Direvtory to run apply or init in.
-
-REGION = ap-northeast-1
-ENV = $1
-SCOPE := src/${ENV} 
+# $ make init-(dev or prod or etc.)
+# $ make plan-(dev or prod or etc.)
+# $ make apply-(dev or prod or etc.)
+SCOPE := src
 CD = [[ -d $(SCOPE) ]] && cd $(SCOPE)
-
 
 .PHONY: all init
 
 all:
 	@more Makefile
 
-init:
-	@${CD} && \
-		terraform init
+init-%:
+	@[[ -d $(SCOPE)/${@:init-%=%} ]] && \
+	cd $(SCOPE)/${@:init-%=%}  && \
+	terraform init
 
-plan:
-	@${CD} && \
-		terraform plan
+plan-%:
+	@[[ -d $(SCOPE)/${@:plan-%=%} ]] && \
+	cd $(SCOPE)/${@:plan-%=%}  && \
+	terraform plan
 
-migrate:
-	@${CD} && \
-		terraform init -migrate-state
+migrate-%:
+	@[[ -d $(SCOPE)/${@:migrate-%=%} ]] && \
+	cd $(SCOPE)/${@:migrate-%=%}  && \
+	terraform init -migrate-state
 
-apply:
-	@${CD} && \
-		terraform apply
+apply-%:
+	@[[ -d $(SCOPE)/${@:apply-%=%} ]] && \
+	cd $(SCOPE)/${@:apply-%=%}  && \
+	terraform apply
 		
-destroy:
-	@${CD} && \
-		terraform destroy
+destroy-%:
+	@[[ -d $(SCOPE)/${@:destroy-%=%} ]] && \
+	cd $(SCOPE)/${@:destroy-%=%}  && \
+	terraform destroy
