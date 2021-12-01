@@ -11,6 +11,9 @@ variable "db_sg_id" {
 variable "private_subnet_ids" {
   type = list(string)
 }
+variable "instace_type" {
+  type = string
+}
 # 事前にSSMでパラメータを設定しておく
 data "aws_ssm_parameter" "db_username" {
   name = "DB_USERNAME"

@@ -109,5 +109,6 @@ module "rds" {
   app_name           = var.app_name
   vpc_id             = module.network.vpc_id
   db_sg_id           = module.sg.db_sg_id
+  instace_type       = "db.t3.medium"
   private_subnet_ids = module.network.private_subnet_ids
 }

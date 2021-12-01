@@ -4,7 +4,7 @@ resource "aws_instance" "db" {
   ami           = "ami-0f27d081df46f326c"
   instance_type = "t3.nano"
   # key_name      = aws_key_pair.main.id
-  key_name               = "ec2"
+  key_name               = "takahashi-ssh-aws"
   vpc_security_group_ids = [var.ssh_sg_id]
   subnet_id              = var.public_subnet_id
 
