@@ -20,9 +20,14 @@ plan:
 	@${CD} && \
 	terraform plan
 
+# Make migrate if S3 bucket name is changed.
 migrate:
 	@${CD} && \
 	terraform init -migrate-state
+# Make state list of resources.
+list:
+	@${CD} && \
+	terraform state list
 
 apply:
 	@${CD} && \
