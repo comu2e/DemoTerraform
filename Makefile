@@ -24,15 +24,20 @@ plan:
 migrate:
 	@${CD} && \
 	terraform init -migrate-state
+
+apply:
+	@${CD} && \
+	terraform apply
+
+# Refresh tfstate if created resources are changed by manually.
+refresh:
+	@${CD} && \
+	terraform refresh
 # Make state list of resources.
 list:
 	@${CD} && \
 	terraform state list
 
-apply:
-	@${CD} && \
-	terraform apply
-		
 destroy:
 	@${CD} && \
 	terraform destroy
