@@ -2,7 +2,9 @@
 # $ make init-(dev or prod or etc.)
 # $ make plan-(dev or prod or etc.)
 # $ make apply-(dev or prod or etc.)
-SCOPE := src
+SRC := $1
+ROOT := src
+SCOPE := ${ROOT}/${SRC}
 CD = [[ -d $(SCOPE) ]] && cd $(SCOPE)
 
 .PHONY: all init
@@ -10,27 +12,22 @@ CD = [[ -d $(SCOPE) ]] && cd $(SCOPE)
 all:
 	@more Makefile
 
-init-%:
-	@[[ -d $(SCOPE)/${@:init-%=%} ]] && \
-	cd $(SCOPE)/${@:init-%=%}  && \
+init:
+	@${CD} && \
 	terraform init
 
-plan-%:
-	@[[ -d $(SCOPE)/${@:plan-%=%} ]] && \
-	cd $(SCOPE)/${@:plan-%=%}  && \
+plan:
+	@${CD} && \
 	terraform plan
 
-migrate-%:
-	@[[ -d $(SCOPE)/${@:migrate-%=%} ]] && \
-	cd $(SCOPE)/${@:migrate-%=%}  && \
+migrate:
+	@${CD} && \
 	terraform init -migrate-state
 
-apply-%:
-	@[[ -d $(SCOPE)/${@:apply-%=%} ]] && \
-	cd $(SCOPE)/${@:apply-%=%}  && \
+apply:
+	@${CD} && \
 	terraform apply
 		
-destroy-%:
-	@[[ -d $(SCOPE)/${@:destroy-%=%} ]] && \
-	cd $(SCOPE)/${@:destroy-%=%}  && \
+destroy:
+	@${CD} && \
 	terraform destroy

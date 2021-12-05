@@ -1,3 +1,7 @@
+#! /bin/bash
+set -euC
+
+# set enviroment value into aws ssm parameter store.
 #usage
 # cp .env.examp .env.dev
 # input env value .env.dev
@@ -12,7 +16,7 @@ do
   KEY=${LINE%%=*}
   VALUE=${LINE#*=}
   #if $VALUE is not set or not filled.
-  if [ -n "$VALUE" ]; then
+  if [[ -n "$VALUE" ]]; then
   #execute aws cli command.
   echo "excuted aws ssm put-parameter --type SecureString --name "/$APP_NAME/$KEY" --value "$VALUE"  --overwrite"
   aws ssm put-parameter --type SecureString --name "/$APP_NAME/$KEY" --value "$VALUE"  --overwrite 
