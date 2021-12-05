@@ -73,9 +73,9 @@ https://github.com/comu2e/nginx-php-Sample
 ## 実行方法
 
 ```
-$ make init-(dev or prod) 
-$ make plan-(dev or prod)
-$ make apply-(dev or prod)
+$ make init SRC=dev or prod
+$ make plan SRC=dev or prod
+$ make apply SRC=dev or prod
 ```
 変更時は上記のDockerfile,confファイルなどを使用用途に合わせて変更するとともに、
 container-defition.jsonを変更してください。

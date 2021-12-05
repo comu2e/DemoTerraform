@@ -3,7 +3,7 @@ set -euC
 
 # set enviroment value into aws ssm parameter store.
 #usage
-# cp .env.examp .env.dev
+# cp .env.example .env.dev
 # input env value .env.dev
 # sh aws.sh .env.dev app_name
 
