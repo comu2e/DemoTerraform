@@ -5,6 +5,7 @@ on:
     branches:
       - develop
       #- staging
+
 jobs:
   Setup:
     runs-on: ubuntu-latest
