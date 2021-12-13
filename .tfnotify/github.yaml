@@ -3,7 +3,7 @@ notifier:
   github:
     token: $GITHUB_TOKEN
     repository:
-      owner: "HomMarkHunt"
+      owner: "comu2e"
       name: "awesome-terraform-impl"
 terraform:
   fmt:
