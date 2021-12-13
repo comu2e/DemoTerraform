@@ -20,5 +20,5 @@ jobs:
         uses: reviewdog/action-tfsec@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          fail_on_error: "true"
+          fail_on_error: "false"
           filter_mode: "nofilter"
