@@ -3,7 +3,7 @@ name: pr-plan
 on:
   push:
     branches-ignore:
-      - dev
+      - develop
 
 jobs:
   terraform:
