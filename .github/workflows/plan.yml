@@ -1,0 +1,41 @@
+steps:
+  - name: Checkout Repo
+    uses: actions/checkout@v2
+
+  - name: setup Terraform
+    uses: hashicorp/setup-terraform@v1
+    with:
+      terraform_version: 1.0.1
+
+  - name: terraform init
+    run: terraform init
+
+  - name: terraform plan
+    id: plan
+    run: terraform plan -no-color -lock=false
+
+  - uses: actions/github-script@v1
+    if: ${{ !contains(steps.plan.outputs.stdout, 'No changes.') }}
+    env:
+      STDOUT: "${{ steps.plan.outputs.stdout }}"
+    with:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+      # NOTE: 区切り文字で囲まれた範囲のみを出力する
+      script: |
+        const lines = process.env.STDOUT.split('\n')
+        const separator = '-'.repeat(72)
+        let index = lines.indexOf(separator)
+        let outputLines = lines.slice(index + 1)
+        index = outputLines.indexOf(separator)
+        if (index) {
+          outputLines = outputLines.slice(0, index)
+        }
+        const planOutput = '```' + outputLines.join('\n') + '```'
+        const output = `<details><summary>tf plan:</summary>\n\n${planOutput}\n\n</details>`;
+
+        github.issues.createComment({
+          issue_number: context.issue.number,
+          owner: context.repo.owner,
+          repo: context.repo.repo,
+          body: output
+        })
