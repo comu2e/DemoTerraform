@@ -7,8 +7,6 @@ ROOT := src
 SCOPE := ${ROOT}/${SRC}
 CD = [[ -d $(SCOPE) ]] && cd $(SCOPE)
 
-.PHONY: all init
-
 all:
 	@more Makefile
 
@@ -25,6 +23,7 @@ migrate:
 	@${CD} && \
 	terraform init -migrate-state
 
+# Make resources by terraform
 apply:
 	@${CD} && \
 	terraform apply
@@ -33,11 +32,14 @@ apply:
 refresh:
 	@${CD} && \
 	terraform refresh
+
 # Make state list of resources.
 list:
 	@${CD} && \
 	terraform state list
 
+# Destroy terraform resources.
 destroy:
 	@${CD} && \
 	terraform destroy
+
