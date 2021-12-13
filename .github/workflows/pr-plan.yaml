@@ -3,7 +3,7 @@ name: pr-plan
 on:
   push:
     branches-ignore:
-      - main
+      - dev
 
 jobs:
   terraform:
@@ -35,13 +35,13 @@ jobs:
         id: install
         run: |
           sudo curl -fL -o tfnotify.tar.gz https://github.com/mercari/tfnotify/releases/download/v0.7.0/tfnotify_linux_amd64.tar.gz
-          sudo tar -C /usr/bin -xzf ../../.tfnotify.tar.gz
+          sudo tar -C /usr/bin -xzf tfnotify.tar.gz
       - name: Terraform Init
         id: init
         run: terraform init
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan | tfnotify -config .tfnotify/github.yaml plan
+        run: terraform plan | tfnotify -config ../../.tfnotify/github.yaml plan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
