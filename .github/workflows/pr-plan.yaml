@@ -3,8 +3,8 @@ name: pr-plan
 on:
   push:
     branches-ignore:
-      - [develop, master]
-
+      - develop
+      - master
 jobs:
   Setup:
     runs-on: ubuntu-latest
