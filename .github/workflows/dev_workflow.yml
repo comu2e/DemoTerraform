@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v1.3.2
+        uses: actions/checkout@v0.8.0
       - name: terraform init
         uses: hashicorp/terraform-github-actions@master
         with:
