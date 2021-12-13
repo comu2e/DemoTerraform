@@ -3,7 +3,7 @@ name: dev-apply
 on:
   push:
     branches:
-      - dev
+      - develop
 
 jobs:
   terraform:
