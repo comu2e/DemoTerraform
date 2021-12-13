@@ -4,7 +4,7 @@ notifier:
     token: $GITHUB_TOKEN
     repository:
       owner: "comu2e"
-      name: "awesome-terraform-impl"
+      name: "DemoTerraform"
 terraform:
   fmt:
     template: |
