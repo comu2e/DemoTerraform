@@ -3,7 +3,7 @@ name: pr-plan
 on:
   push:
     branches-ignore:
-      - main
+      - dev
 
 jobs:
   terraform:
@@ -13,6 +13,8 @@ jobs:
     defaults:
       run:
         shell: bash
+        working-directory: "./src/dev"
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
