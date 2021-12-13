@@ -35,7 +35,7 @@ jobs:
         id: install
         run: |
           sudo curl -fL -o tfnotify.tar.gz https://github.com/mercari/tfnotify/releases/download/v0.7.0/tfnotify_linux_amd64.tar.gz
-          sudo tar -C /usr/bin -xzf ./tfnotify.tar.gz
+          sudo tar -C /usr/bin -xzf ../../.tfnotify.tar.gz
       - name: Terraform Init
         id: init
         run: terraform init
