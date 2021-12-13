@@ -43,7 +43,7 @@ $ aws s3 mb s3://tfstate-${var.app_name}
   
   $app_nameがapp_dev
   
-  $ sh aws.sh .env.dev app_dev 
+  $ sh aws.sh app_dev .env.dev  
   ```
 
 以上
