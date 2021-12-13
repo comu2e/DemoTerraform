@@ -61,11 +61,11 @@ resource "aws_instance" "db" {
 #   public_key = file(abspath("../../module/compute/ec2/ec2.pub"))
 # }
 # EIP
-resource "aws_eip" "db" {
-  instance = aws_instance.db.id
-  vpc      = true
-  tags = {
-    Name = "${var.app_name}-DB"
-  }
-}
+# resource "aws_eip" "db" {
+#   instance = aws_instance.db.id
+#   vpc      = true
+#   tags = {
+#     Name = "${var.app_name}-DB"
+#   }
+# }
 
