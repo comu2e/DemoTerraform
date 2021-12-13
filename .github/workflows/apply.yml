@@ -13,14 +13,14 @@ jobs:
       - run: echo Setup
 
   terraform-dev:
-    name: Terraform
+    name: Terraform-Dev
     runs-on: ubuntu-latest
     needs: Setup
 
     defaults:
       run:
         shell: bash
-        working-directory: "./src/prod"
+        working-directory: "./src/dev"
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -46,7 +46,7 @@ jobs:
         run: terraform apply -auto-approve
 
   terraform-prod:
-    name: Terraform
+    name: Terraform-Prod
     runs-on: ubuntu-latest
     needs: Setup
 
