@@ -34,7 +34,7 @@ jobs:
 
       - uses: actions/checkout@v2
       - name: notify-Terraform-init-plan
-        uses: comu2e/tfnotify-composite-action@1.0.2
+        uses: comu2e/tfnotify-composite-action@1.0.3
 
   terraform-prod:
     name: Show Terraform Prod difference
@@ -59,4 +59,4 @@ jobs:
 
       - uses: actions/checkout@v2
       - name: notify-Terraform-init-plan
-        uses: comu2e/tfnotify-composite-action@1.0.2
+        uses: comu2e/tfnotify-composite-action@1.0.3
