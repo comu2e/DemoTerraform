@@ -22,7 +22,6 @@ jobs:
         working-directory: "./src/dev"
 
     steps:
-      - uses: "actions/setup-terraform-"
       - name: notify-Terraform-init-plan
         uses: actions/tfnotify-composite-action@v1
 
@@ -37,6 +36,5 @@ jobs:
         working-directory: "./src/prod"
 
     steps:
-      - uses: "actions/setup-terraform-"
       - name: notify-Terraform-init-plan
         uses: actions/tfnotify-composite-action@v1
