@@ -4,14 +4,12 @@
 # $ make plan-(dev or prod or etc.)
 # $ make apply-(dev or prod or etc.)
 include .env
-QUEST := $0
 SRC := $1
-ARG2 := $2
 ROOT := src
 SCOPE := ${ROOT}/${SRC}
 CD = [[ -d $(SCOPE) ]] && cd $(SCOPE)
 
-# aws cliは入っておく。
+
 ecr_repo:
 	aws ecr create-repository --repository-name $(APP_NAME)-app && \
 	aws ecr create-repository --repository-name $(APP_NAME)-nginx
