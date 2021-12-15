@@ -1,0 +1,118 @@
+{
+  "alb_dns_name": {
+    "sensitive": false,
+    "type": "string",
+    "value": "app-dev-976206136.ap-northeast-1.elb.amazonaws.com"
+  },
+  "aws_vpc": {
+    "sensitive": false,
+    "type": "string",
+    "value": "vpc-0263c190f3110d20e"
+  },
+  "db_endpoint": {
+    "sensitive": false,
+    "type": "string",
+    "value": "app-dev.cct7mpu6qgko.ap-northeast-1.rds.amazonaws.com:5432"
+  },
+  "db_subnets": {
+    "sensitive": false,
+    "type": [
+      "tuple",
+      [
+        "string",
+        "string"
+      ]
+    ],
+    "value": [
+      "subnet-04fac267a46167087",
+      "subnet-0469b6abea35b7b15"
+    ]
+  },
+  "ecs_exec_role": {
+    "sensitive": false,
+    "type": "string",
+    "value": "arn:aws:iam::911553828611:role/app-dev-TaskExecution"
+  },
+  "redis_hostname": {
+    "sensitive": false,
+    "type": [
+      "list",
+      [
+        "object",
+        {
+          "address": "string",
+          "availability_zone": "string",
+          "id": "string",
+          "port": "number"
+        }
+      ]
+    ],
+    "value": [
+      {
+        "address": "app-dev.1b1ern.0001.apne1.cache.amazonaws.com",
+        "availability_zone": "ap-northeast-1a",
+        "id": "0001",
+        "port": 6379
+      }
+    ]
+  }
+}
+{
+  "alb_dns_name": {
+    "sensitive": false,
+    "type": "string",
+    "value": "app-dev-976206136.ap-northeast-1.elb.amazonaws.com"
+  },
+  "aws_vpc": {
+    "sensitive": false,
+    "type": "string",
+    "value": "vpc-0263c190f3110d20e"
+  },
+  "db_endpoint": {
+    "sensitive": false,
+    "type": "string",
+    "value": "app-dev.cct7mpu6qgko.ap-northeast-1.rds.amazonaws.com:5432"
+  },
+  "db_subnets": {
+    "sensitive": false,
+    "type": [
+      "tuple",
+      [
+        "string",
+        "string"
+      ]
+    ],
+    "value": [
+      "subnet-04fac267a46167087",
+      "subnet-0469b6abea35b7b15"
+    ]
+  },
+  "ecs_exec_role": {
+    "sensitive": false,
+    "type": "string",
+    "value": "arn:aws:iam::911553828611:role/app-dev-TaskExecution"
+  },
+  "redis_hostname": {
+    "sensitive": false,
+    "type": [
+      "list",
+      [
+        "object",
+        {
+          "address": "string",
+          "availability_zone": "string",
+          "id": "string",
+          "port": "number"
+        }
+      ]
+    ],
+    "value": [
+      {
+        "address": "app-dev.1b1ern.0001.apne1.cache.amazonaws.com",
+        "availability_zone": "ap-northeast-1a",
+        "id": "0001",
+        "port": 6379
+      }
+    ]
+  }
+}
