@@ -11,7 +11,6 @@ ROOT := src
 SCOPE := ${ROOT}/${SRC}
 CD = [[ -d $(SCOPE) ]] && cd $(SCOPE)
 
-# test
 # aws cliは入っておく。
 ecr_repo:
 	aws ecr create-repository --repository-name $(APP_NAME)-app && \
