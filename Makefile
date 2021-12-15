@@ -14,8 +14,8 @@ ecr_repo:
 	aws ecr create-repository --repository-name $(APP_NAME)-app && \
 	aws ecr create-repository --repository-name $(APP_NAME)-nginx
 
-ssm_store:
-	sh ssm_put.sh $(APP_NAME) .env
+ssm_put:
+	sh ssm_put.sh $(APP_NAME) .env.production
 
 init:
 	@${CD} && \
