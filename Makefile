@@ -50,8 +50,3 @@ destroy:
 	@${CD} && \
 	terraform destroy
 
-outputs:
-	@${CD} && \
-		terraform output -json | jq -r '"DB_HOST=\(.db_endpoint.value)"'  > ../../outputs.txt  && \
-	terraform output -json | jq -r '"REDIS_HOST=\(.redis_hostname.value[0].address)"' >> ../../outputs.txt && \
-	terraform output -json | jq -r '"SUBNETS=\(.db_subnets.value)"' >> ../../outputs.txt 
