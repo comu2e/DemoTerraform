@@ -1,14 +1,18 @@
 # usage:
+# $ make ecr_repo
 # $ make init-(dev or prod or etc.)
 # $ make plan-(dev or prod or etc.)
 # $ make apply-(dev or prod or etc.)
+include .env
+
 SRC := $1
 ROOT := src
 SCOPE := ${ROOT}/${SRC}
 CD = [[ -d $(SCOPE) ]] && cd $(SCOPE)
 
-all:
-	@more Makefile
+ecr_repo:
+	aws ecr create-repository --repository-name $(APP_NAME)-app && \
+	aws ecr create-repository --repository-name $(APP_NAME)-nginx
 
 init:
 	@${CD} && \
