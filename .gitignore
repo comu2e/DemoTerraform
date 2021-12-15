@@ -4,7 +4,7 @@
 # env
 .env
 .env.dev
-.env.prod
+.env.production
 
 # Terraform
 .terraform
