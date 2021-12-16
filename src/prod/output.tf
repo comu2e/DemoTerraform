@@ -23,3 +23,7 @@ output "ecs_exec_role" {
 output "redis_hostname" {
   value = module.redis.redis_hostname
 }
+
+output "db_security_groups" {
+  value = module.sg.db_sg_id
+}
