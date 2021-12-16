@@ -8,6 +8,7 @@ SRC := $1
 ROOT := src
 SCOPE := ${ROOT}/${SRC}
 CD = [[ -d $(SCOPE) ]] && cd $(SCOPE)
+ENV_FILE := ../../env.production
 
 
 ecr_repo:
@@ -50,3 +51,9 @@ destroy:
 	@${CD} && \
 	terraform destroy
 
+outputs:
+	@${CD} && \
+		terraform output -json | jq -r '"DB_HOST=\(.db_endpoint.value)"'  > $(ENV_FILE)  && \
+		terraform output -json | jq -r '"REDIS_HOST=\(.redis_hostname.value[0].address)"' >> $(ENV_FILE)  && \
+		terraform output -json | jq -r '"SUBNETS=\(.db_subnets.value)"' >> $(ENV_FILE) && \
+		terraform output -json | jq -r '"SECURITY_GROUPS=\(.db_security_groups.value)"' >> $(ENV_FILE)
