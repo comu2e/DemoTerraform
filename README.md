@@ -67,8 +67,6 @@ $ aws ssm put-parameter --type SecureString --name "/${app_nameを入力}/該当
 - SESは手動で設定しています。
 - １つの環境ごとにEIPを３つ消費するので、２つ以上の環境を構築する場合はEIPの上限解除をAWSに申請してください。
 - ECRにDockerImageをプッシュしておく。
-今回のサンプルは下記のDocker(nginx/php-fpm)の簡素な構成としています。
-https://github.com/comu2e/nginx-php-Sample
 
 ## 実行方法
 
