@@ -1,14 +1,22 @@
 # usage:
-# $ make init-(dev or prod or etc.)
-# $ make plan-(dev or prod or etc.)
-# $ make apply-(dev or prod or etc.)
+# $ make ecr_repo
+# $ make init SRC=(dev or prod or etc.)
+# $ make plan SRC=(dev or prod or etc.)
+# $ make apply SRC=(dev or prod or etc.)
+include .env
 SRC := $1
 ROOT := src
 SCOPE := ${ROOT}/${SRC}
 CD = [[ -d $(SCOPE) ]] && cd $(SCOPE)
+ENV__PROD_FILE := .env.production
 
-all:
-	@more Makefile
+
+ecr_repo:
+	aws ecr create-repository --repository-name $(APP_NAME)-app && \
+	aws ecr create-repository --repository-name $(APP_NAME)-nginx
+
+ssm_put:
+	sh ssm_put.sh $(APP_NAME) .env
 
 init:
 	@${CD} && \
@@ -43,3 +51,9 @@ destroy:
 	@${CD} && \
 	terraform destroy
 
+outputs:
+	@${CD} && \
+	terraform output -json | jq -r '"DB_HOST=\(.db_endpoint.value)"' && \
+	terraform output -json | jq -r '"REDIS_HOST=\(.redis_hostname.value[0].address)"' && \
+	terraform output -json | jq -r '"SUBNETS=\(.db_subnets.value)"' && \
+	terraform output -json | jq -r '"SECURITY_GROUPS=\(.db_security_groups.value)"'

@@ -29,8 +29,8 @@
       "logDriver": "awslogs",
       "options": {
         "awslogs-region": "${region}",
-        "awslogs-group": "/${name}/app-ngix",
-        "awslogs-stream-prefix": "ecs/nginx"
+        "awslogs-group": "${cloudwatch_group_name}",
+        "awslogs-stream-prefix": "${name}-nginx"
       }
     }
   },
@@ -57,8 +57,8 @@
       "logDriver": "awslogs",
       "options": {
         "awslogs-region": "${region}",
-        "awslogs-group": "/${name}/app-ngix",
-        "awslogs-stream-prefix": "ecs/app"
+        "awslogs-group": "${cloudwatch_group_name}",
+        "awslogs-stream-prefix": "${name}-app"
       }
     },
     "environment": [
@@ -90,7 +90,7 @@
     "secrets": [
       {
         "name": "APP_KEY",
-        "valueFrom": "APP_KEY"
+        "valueFrom": "/${name}/APP_KEY"
       },
       {
         "name": "REDIS_HOST",
@@ -98,19 +98,19 @@
       },
       {
         "name": "DB_HOST",
-        "valueFrom": "DB_HOST"
+        "valueFrom": "/${name}/DB_HOST"
       },
       {
         "name": "DB_DATABASE",
-        "valueFrom": "DB_NAME"
+        "valueFrom": "/${name}/DB_NAME"
       },
       {
         "name": "DB_USERNAME",
-        "valueFrom": "DB_USERNAME"
+        "valueFrom": "/${name}/DB_USERNAME"
       },
       {
         "name": "DB_PASSWORD",
-        "valueFrom": "DB_PASSWORD"
+        "valueFrom": "/${name}/DB_PASSWORD"
       }
     ]
   }

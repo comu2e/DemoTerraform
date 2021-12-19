@@ -15,7 +15,7 @@ jobs:
     name: Show Terraform Dev difference
     runs-on: ubuntu-latest
     needs: Setup
-
+    # src/devにmain.tf配置
     defaults:
       run:
         shell: bash
