@@ -12,11 +12,6 @@ resource "aws_iam_role_policy_attachment" "ecs" {
   role       = aws_iam_role.github_actions.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonECS_FullAccess"
 }
-resource "aws_iam_role_policy_attachment" "full" {
-  role       = aws_iam_role.github_actions.name
-  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
-}
-
 resource "aws_iam_role" "github_actions" {
   name               = "${var.system}-github-actions"
   assume_role_policy = <<EOF
