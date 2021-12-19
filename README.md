@@ -54,7 +54,7 @@ $ aws ssm put-parameter --type SecureString --name "/${app_nameを入力}/該当
 ```
 
 
-### ④　秘密鍵の作成
+### ④　公開鍵の作成
 
 - aws cliで使用するAWSで環境の設定をしておいてください。
 - ec2の踏み台サーバーの鍵はmodule/compute/template内に
@@ -65,7 +65,7 @@ $ aws ssm put-parameter --type SecureString --name "/${app_nameを入力}/該当
 - LogはCloudFormationで確認できますが、確認のしやすさを高めるためにGrafanaCloudにLogを流せるようにしています。
 使用したい場合はGrafanaCloudのアカウント設定をしてください。
 - SESは手動で設定しています。
-- １つの環境ごとにEIPを３つ消費するので、２つ以上の環境を構築する場合はEIPの上限解除をAWSに申請してください。
+- １つの環境ごとにEIPを３つぐらい消費するので、２つ以上の環境を構築する場合はEIPの上限解除をAWSに申請してください。
 - ECRにDockerImageをプッシュしておく。
 
 ## 実行方法
@@ -85,6 +85,6 @@ container-defition.jsonを変更してください。
 - https化(ALB,Route53の設定)
 - Cacheサービスの選定(SQS/Elastic Cacheなど)
 - CloudFront(必要に応じて）
-- CI/CD(nginx-phpfpmレポジトリ)
 - リファクタリング(Cloudmapは現時点では不要)
 - Frontendの追加
+- 上記手順をシェルでまとめる。
