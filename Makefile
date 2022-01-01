@@ -34,6 +34,7 @@ migrate:
 # Make resources by terraform
 apply:
 	@${CD} && \
+	terraform init && \
 	terraform apply
 
 # Refresh tfstate if created resources are changed by manually.
@@ -44,11 +45,13 @@ refresh:
 # Make state list of resources.
 list:
 	@${CD} && \
+	terraform init && \
 	terraform state list
 
 # Destroy terraform resources.
 destroy:
 	@${CD} && \
+	terraform init && \
 	terraform destroy
 
 outputs:

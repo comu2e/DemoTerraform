@@ -6,7 +6,7 @@ terraform {
   required_version = "1.0.11"
 }
 module "network" {
-  source               = "../../module/network"
+  source               = "../module/network"
   azs                  = var.azs
   app_name             = var.app_name
   vpc_cidr             = var.vpc_cidr
@@ -15,7 +15,7 @@ module "network" {
 }
 # SecurityGroup
 module "sg" {
-  source               = "../../module/security"
+  source               = "../module/security"
   app_name             = var.app_name
   vpc_cidr             = var.vpc_cidr
   vpc_id               = module.network.vpc_id
@@ -27,11 +27,11 @@ module "sg" {
 
 # IAM role
 module "iam" {
-  source   = "../../module/iam"
+  source   = "../module/iam"
   app_name = var.app_name
 }
 module "compute" {
-  source           = "../../module/compute"
+  source           = "../module/compute"
   app_name         = var.app_name
   vpc_id           = module.network.vpc_id
   public_subnet_id = module.network.public_subnet_ids[0]
@@ -39,7 +39,7 @@ module "compute" {
 }
 #ECS
 module "alb" {
-  source            = "../../module/elb"
+  source            = "../module/elb"
   app_name          = var.app_name
   vpc_id            = module.network.vpc_id
   public_subnet_ids = module.network.public_subnet_ids
@@ -55,8 +55,8 @@ resource "aws_ecs_cluster" "main" {
 }
 
 module "ecs_app" {
-  source                         = "../../module/ecs"
-  task_definition_file_path      = "../../module/ecs/container_definitions.json"
+  source                         = "../module/ecs"
+  task_definition_file_path      = "../module/ecs/container_definitions.json"
   entry_container_name           = "nginx"
   entry_container_port           = 80
   app_name                       = var.app_name
@@ -69,13 +69,13 @@ module "ecs_app" {
 }
 
 module "cloudmap" {
-  source   = "../../module/cloudmap"
+  source   = "../module/cloudmap"
   app_name = var.app_name
   vpc_id   = module.network.vpc_id
 }
 module "ecs_worker" {
-  source = "../../module/worker"
-  # task_definition_file_path      = "../../module/ecs/container_definitions.json"
+  source = "../module/worker"
+  # task_definition_file_path      = "../module/ecs/container_definitions.json"
   entry_container_name = "worker"
   entry_container_port = 6379
   app_name             = var.app_name
@@ -97,7 +97,7 @@ module "ecs_worker" {
 
 
 module "redis" {
-  source             = "../../module/redis"
+  source             = "../module/redis"
   app_name           = var.app_name
   vpc_id             = module.network.vpc_id
   redis_sg_id        = module.sg.redis_ecs_sg_id
@@ -105,7 +105,7 @@ module "redis" {
 }
 
 module "rds" {
-  source             = "../../module/db"
+  source             = "../module/db"
   app_name           = var.app_name
   vpc_id             = module.network.vpc_id
   db_sg_id           = module.sg.db_sg_id
@@ -115,7 +115,7 @@ module "rds" {
 
 # GitHub OIDCで使用
 module "github_actions" {
-  source      = "../../module/github"
+  source      = "../module/github"
   system      = var.app_name
   github_repo = "comu2e/test-worker-scheduler"
 }
