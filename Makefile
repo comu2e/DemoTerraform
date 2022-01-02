@@ -10,6 +10,9 @@ SCOPE := ${ROOT}/${SRC}
 CD = [[ -d $(SCOPE) ]] && cd $(SCOPE)
 ENV__PROD_FILE := .env.production
 
+s3_tfbackend:
+	  # S3 bucket作成
+		aws s3 mb s3://tfstate-${APP_NAME}
 
 ecr_repo:
 	aws ecr create-repository --repository-name $(APP_NAME)-app && \
@@ -20,8 +23,9 @@ ssm_put:
 
 init:
 	@${CD} && \
-	terraform init
-
+	terraform init -reconfigure -backend-config="bucket=tfstate-${APP_NAME}" \
+                 -backend-config="key=terraform.tfstate.${SRC}" \
+                 -backend-config="region=ap-northeast-1"
 plan:
 	@${CD} && \
 	terraform plan
@@ -29,12 +33,15 @@ plan:
 # Make migrate if S3 bucket name is changed.
 migrate:
 	@${CD} && \
-	terraform init -migrate-state
-
+	terraform init -migrate-state -reconfigure -backend-config="bucket=tfstate-${APP_NAME}" \
+                 -backend-config="key=terraform.tfstate.${SRC}" \
+                 -backend-config="region=ap-northeast-1"
 # Make resources by terraform
 apply:
 	@${CD} && \
-	terraform init && \
+	terraform init -reconfigure -backend-config="bucket=tfstate-${APP_NAME}" \
+                 -backend-config="key=terraform.tfstate.${SRC}" \
+                 -backend-config="region=ap-northeast-1" && \
 	terraform apply
 
 # Refresh tfstate if created resources are changed by manually.
@@ -45,13 +52,17 @@ refresh:
 # Make state list of resources.
 list:
 	@${CD} && \
-	terraform init && \
+	terraform init -reconfigure -backend-config="bucket=tfstate-${APP_NAME}" \
+                 -backend-config="key=terraform.tfstate.${SRC}" \
+                 -backend-config="region=ap-northeast-1" && \	
 	terraform state list
 
 # Destroy terraform resources.
 destroy:
 	@${CD} && \
-	terraform init && \
+	terraform init -reconfigure -backend-config="bucket=tfstate-${APP_NAME}" \
+                 -backend-config="key=terraform.tfstate.${SRC}" \
+                 -backend-config="region=ap-northeast-1" && \
 	terraform destroy
 
 outputs:

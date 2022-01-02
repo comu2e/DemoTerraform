@@ -5,6 +5,10 @@ on:
     branches:
       - develop
       #- staging
+env:
+  # please set your own app name corresponding with application name.
+  # APP_NAME: ${{ github.event.repository.name }}
+  APP_NAME: test-worker-scheduler
 
 jobs:
   Setup:
@@ -39,7 +43,10 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: terraform init
+        run: |
+          terraform init -reconfigure -backend-config="bucket=tfstate-${{env.APP_NAME}}" \
+          -backend-config="key=terraform.tfstate.dev" \
+          -backend-config="region=ap-northeast-1"
 
       - name: Terraform Apply
         id: apply
