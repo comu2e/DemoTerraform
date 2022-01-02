@@ -11,14 +11,15 @@ ECS Fargate をTerraformで作成したサンプルになります。
 
 srcディレクトリ内に環境のmain,output,variables.tf,backend.tfを作成する。
 
+variables.tfのapp_nameでアプリ名と環境名がわかるように設定しておく。
+
 各環境の差分はvariablesで管理するようにしている。
 
 tfstateのリモート保存先設定(S3にバケット作成)
 
 ### ②　S3 bucket作成：
-variables.tfのapp_nameでアプリ名と環境名がわかるように設定しておく。
 ```
-$ aws s3 mb s3://tfstate-${var.app_name} 
+$ make s3_tfbackend
 ```
 ### ③　Parameter storeへの値設定
 - 機密情報などはAWSのParameterStoreを使用してください。
