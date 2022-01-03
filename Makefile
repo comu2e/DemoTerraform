@@ -9,11 +9,15 @@ ROOT := src
 SCOPE := ${ROOT}/${SRC}
 CD = [[ -d $(SCOPE) ]] && cd $(SCOPE)
 ENV__PROD_FILE := .env.production
+TF_STATE_BUCKET := tfstate-${APP_NAME}-${SRC}
+TR_INIT_OPTION := -reconfigure -reconfigure -backend-config="bucket=${TF_STATE_BUCKET}"  \
+           -backend-config="key=terraform.tfstate.${SRC}" \
+          -backend-config="region=ap-northeast-1"
 
 s3_tfbackend:
 	  # S3 bucket作成 versioning機能追加
-		aws s3 mb s3://tfstate-${APP_NAME} && \
-		aws s3api put-bucket-versioning --bucket tfstate-${APP_NAME} --versioning-configuration Status=Enabled
+		aws s3 mb s3://${TF_STATE_BUCKET}&& \
+		aws s3api put-bucket-versioning --bucket ${TF_STATE_BUCKET} --versioning-configuration Status=Enabled
 
 ecr_repo:
 	aws ecr create-repository --repository-name $(APP_NAME)-app && \
@@ -24,9 +28,8 @@ ssm_put:
 
 init:
 	@${CD} && \
-	terraform init -reconfigure -backend-config="bucket=tfstate-${APP_NAME}" \
-                 -backend-config="key=terraform.tfstate.${SRC}" \
-                 -backend-config="region=ap-northeast-1"
+	terraform init ${TR_INIT_OPTION}
+	
 plan:
 	@${CD} && \
 	terraform plan
@@ -34,15 +37,11 @@ plan:
 # Make migrate if S3 bucket name is changed.
 migrate:
 	@${CD} && \
-	terraform init -migrate-state -reconfigure -backend-config="bucket=tfstate-${APP_NAME}" \
-                 -backend-config="key=terraform.tfstate.${SRC}" \
-                 -backend-config="region=ap-northeast-1"
+	terraform init -migrate-state ${TR_INIT_OPTION}
 # Make resources by terraform
 apply:
 	@${CD} && \
-	terraform init -reconfigure -backend-config="bucket=tfstate-${APP_NAME}" \
-                 -backend-config="key=terraform.tfstate.${SRC}" \
-                 -backend-config="region=ap-northeast-1" && \
+	terraform init ${TR_INIT_OPTION} && \
 	terraform apply
 
 # Refresh tfstate if created resources are changed by manually.
@@ -53,17 +52,13 @@ refresh:
 # Make state list of resources.
 list:
 	@${CD} && \
-	terraform init -reconfigure -backend-config="bucket=tfstate-${APP_NAME}" \
-                 -backend-config="key=terraform.tfstate.${SRC}" \
-                 -backend-config="region=ap-northeast-1" && \	
+	terraform init ${TR_INIT_OPTION} && \
 	terraform state list
 
 # Destroy terraform resources.
 destroy:
 	@${CD} && \
-	terraform init -reconfigure -backend-config="bucket=tfstate-${APP_NAME}" \
-                 -backend-config="key=terraform.tfstate.${SRC}" \
-                 -backend-config="region=ap-northeast-1" && \
+	terraform init ${TR_INIT_OPTION} && \
 	terraform destroy
 
 outputs:

@@ -27,8 +27,10 @@ module "sg" {
 
 # IAM role
 module "iam" {
-  source   = "../module/iam"
-  app_name = var.app_name
+  source      = "../module/iam"
+  app_name    = var.app_name
+  system      = var.app_name
+  github_repo = "comu2e/test-worker-scheduler"
 }
 module "compute" {
   source           = "../module/compute"
@@ -113,12 +115,3 @@ module "rds" {
   private_subnet_ids = module.network.private_subnet_ids
 }
 
-# GitHub OIDCで使用
-module "github_actions" {
-  source      = "../module/github"
-  system      = var.app_name
-  github_repo = "comu2e/test-worker-scheduler"
-}
-output "github_arn" {
-  value = module.github_actions.github_role.arn
-}
