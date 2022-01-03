@@ -27,3 +27,8 @@ output "redis_hostname" {
 output "db_security_groups" {
   value = module.sg.db_sg_id
 }
+# GitHub OIDCで使用
+
+output "github_arn" {
+  value = module.iam.github_role.arn
+}
