@@ -19,7 +19,7 @@ ecr_repo:
 	aws ecr create-repository --repository-name $(APP_NAME)-nginx
 
 ssm_put:
-	sh ssm_put.sh $(APP_NAME) .env
+	sh ./settings/bin/ssm_put.sh $(APP_NAME) .env
 
 init:
 	@${CD} && \
@@ -67,7 +67,7 @@ destroy:
 
 outputs:
 	@${CD} && \
-	terraform output -json | jq -r '"DB_HOST=\(.db_endpoint.value)"' && \
-	terraform output -json | jq -r '"REDIS_HOST=\(.redis_hostname.value[0].address)"' && \
-	terraform output -json | jq -r '"SUBNETS=\(.db_subnets.value)"' && \
-	terraform output -json | jq -r '"SECURITY_GROUPS=\(.db_security_groups.value)"'
+	terraform output -json | jq -r '"DB_HOST=\(.db_endpoint.value)"' > .env.production && \
+	terraform output -json | jq -r '"REDIS_HOST=\(.redis_hostname.value[0].address)"' >> .env.production && \
+	terraform output -json | jq -r '"SUBNETS=\(.db_subnets.value)"' >> .env.production &&\
+	terraform output -json | jq -r '"SECURITY_GROUPS=\(.db_security_groups.value)"' >> .env.production
