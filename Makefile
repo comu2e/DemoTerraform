@@ -11,8 +11,9 @@ CD = [[ -d $(SCOPE) ]] && cd $(SCOPE)
 ENV__PROD_FILE := .env.production
 
 s3_tfbackend:
-	  # S3 bucket作成
-		aws s3 mb s3://tfstate-${APP_NAME}
+	  # S3 bucket作成 versioning機能追加
+		aws s3 mb s3://tfstate-${APP_NAME} && \
+		aws s3api put-bucket-versioning --bucket tfstate-${APP_NAME} --versioning-configuration Status=Enabled
 
 ecr_repo:
 	aws ecr create-repository --repository-name $(APP_NAME)-app && \
