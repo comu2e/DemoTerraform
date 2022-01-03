@@ -1,13 +1,43 @@
 # DemoTerraform
 ## 概要
-ECS Fargate をTerraformで作成したサンプルになります。
+Construct AWS ECS Fargate with terraform sample.
 
-## 実行環境
+## Environment
 - Terraform/v1.0.11
 - aws-cli/2.2.43 
-- Python/3.9.7
-## 初期設定
-### ①　環境ごとのファイル作成
+
+## Architecture
+```
+.
+|___ MakeFile:Include terraform command to apply/destroy.
+├── settings
+│   ├── bin
+│   │   └── sessionmanager-bundle
+│   │       └── bin : utilty for aws cli
+│   └── template : container definition template file.
+└── src
+    ├── dev : AWS Environment for dev.
+    ├── module: Used for dev or prod envrionment.
+    │   ├── cloudmap
+    │   ├── compute
+    │   │   └── ec2
+    │   ├── db
+    │   ├── ecs
+    │   │   └── template
+    │   ├── elb
+    │   ├── github
+    │   ├── iam
+    │   ├── network
+    │   ├── redis
+    │   ├── security
+    │   └── worker
+    └── prod
+```
+
+
+
+## Initial settings.
+### ①　Create File for each environment.(dev /prod/ staging)
 
 srcディレクトリ内に環境のmain,output,variables.tf,backend.tfを作成する。
 
@@ -17,17 +47,17 @@ variables.tfのapp_nameでアプリ名と環境名がわかるように設定し
 
 tfstateのリモート保存先設定(S3にバケット作成)
 
-### ②　S3 bucket作成：
+### ②　Create S3 bucket for tfstate：
 ```
 $ make s3_tfbackend
 ```
-### ③　Parameter storeへの値設定
+### ③　Set up Parameter store.
 - 機密情報などはAWSのParameterStoreを使用してください。
   （RDSのデータベース、ユーザー名、パスワードの管理に今回は使用しています）
 
-環境変数の登録用に```aws.sh```を準備しています。
+環境変数の登録用に```ssh_put.sh```を準備しています。
 
- #### aws.shの使い方
+ #### ssh_put.shの使い方
 環境変数を設定するのがめんどくさいので作っています。
 ①.env.exampleをコピー ```cp .env.example .env.dev```
 
@@ -35,7 +65,7 @@ $ make s3_tfbackend
 
 ③ コピーした```.env```ファイルに値を記述。（REDIS_HOST,DB_HOSTなどはmake apply後に出てくる値なので注意）
 
-④ ```$ sh aws.sh 環境変数を設定したファイル名 {src/variables.tfに設定した$app_nameと同様の文字列} ```
+④ ```$ sh ssh_put.sh 環境変数を設定したファイル名 {src/variables.tfに設定した$app_nameと同様の文字列} ```
   
   例
   
@@ -44,7 +74,7 @@ $ make s3_tfbackend
   
   $app_nameがapp_dev
   
-  $ sh aws.sh app_dev .env.dev  
+  $ sh ssh_put.sh app_dev .env.dev  
   ```
 
 以上
