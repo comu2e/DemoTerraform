@@ -1,5 +1,5 @@
 # DemoTerraform
-## 概要
+## Concept
 Construct AWS ECS Fargate with terraform sample.
 
 ## Environment
@@ -49,8 +49,6 @@ $ make outputs SRC=dev or prod
 $ make ssm_put SRC=dev or prod
 
 ```
-変更時は上記のDockerfile,confファイルなどを使用用途に合わせて変更するとともに、
-container-defition.jsonを変更してください。
 
 ___
 
@@ -58,11 +56,11 @@ ___
 ## Detail (Initial set up)
 
 ### ①　Create File for each environment.(dev /prod/ staging)
-srcディレクトリ内に環境のmain,output,variables.tf,backend.tfを作成する。
+Create main, output, variables.tf, backend.tf of environment in src directory.
 
-variables.tfのapp_nameでアプリ名と環境名がわかるように設定しておく。
+Set app_name in variables.tf so that you can see the app name and environment name.
 
-各環境の差分はvariablesで管理するようにしている。
+Differences in each environment are managed in variables.tf.
 
 ### ②　Create S3 bucket for tfstate.
 
@@ -75,29 +73,35 @@ Store secret information in AWS Parameter store.
 
 * ```ssh_put.sh``` is prepared.
 
- #### ssh_put.shの使い方
+ #### Usage ssh_put.sh
 ①copy .env.example
 
  ```cp .env.example .env.dev```
 
 ② Registe file to```.gitignore```
 
-③ Write value into ```.env```.（REDIS_HOST,DB_HOSTなどはmake apply後に出てくる値なので注意）
+③ Write value into ```.env```.
 
-④ ```$ sh ssh_put.sh 環境変数を設定したファイル名 {src/variables.tfに設定した$app_nameと同様の文字列} ```
+（Note that REDIS_HOST, DB_HOST, etc. are values that appear after make apply)
+
+④ 
+```
+ $ sh ssh_put.sh File name with environment variables {string similar to $ app_name set in src / variables.tf} 
+ ```
   
-  例
+  Example 
   
   ```
-  環境変数を設定したenvファイル名 .env.dev
+  Env file name with environment variables set up in .env.dev
   
-  $app_nameがapp_dev
-  
+  if app_name is app_dev,
+
   $ sh ssh_put.sh app_dev .env.dev  
   ```
 
 
-下記のコマンドを環境変数分実行しています。
+
+The following commands are executed for the environment variables.
 ```
 $ aws ssm put-parameter --type SecureString --name "/${app_nameを入力}/該当するキー" --value "該当する値"  --overwrite
 ```
@@ -105,26 +109,30 @@ $ aws ssm put-parameter --type SecureString --name "/${app_nameを入力}/該当
 
 ### ④ Make ssh key.
 
-- aws cliで使用するAWSで環境の設定をしておいてください。
-- ec2の踏み台サーバーの鍵はmodule/compute/template内に
-```ssh-keygen```で作成するか、すでに作成した公開鍵を登録してください。
 
-### ⑤　Etc.
+- Please set the environment on AWS used by aws cli.
+- The key to the ec2 bastion server is in module / compute / template
+Create it with `` `ssh-keygen``` or register the public key you have already created.
 
-- LogはCloudFormationで確認できますが、確認のしやすさを高めるためにGrafanaCloudにLogを流せるようにしています。
-使用したい場合はGrafanaCloudのアカウント設定をしてください。
-- SESは手動で設定しています。
-- １つの環境ごとにEIPを３つぐらい消費するので、２つ以上の環境を構築する場合はEIPの上限解除をAWSに申請してください。
-- ECRにDockerImageをプッシュしておく。
+### ⑤　etc.
+
+
+- Log can be confirmed in CloudFormation, but in order to improve the ease of confirmation, Log can be sent to Grafana Cloud.
+If you want to use it, please set up a Grafana Cloud account.
+
+- SES is set manually.
+
+- Since each environment consumes about 3 EIPs, please apply to AWS to lift the upper limit of EIPs when building 2 or more environments.
+
+- Pushed each DockerImage(PHP/Nginx) container to ECR repository.
 
 
 ## Diagram
 ![aws](https://user-images.githubusercontent.com/5231283/143753728-45549b82-2098-492f-a014-6b23c05f510f.png)
 
 ## Todo 
-- https化(ALB,Route53の設定)
-- Cacheサービスの選定(SQS/Elastic Cacheなど)
-- CloudFront(必要に応じて）
-- リファクタリング(Cloudmapは現時点では不要)
-- Frontendの追加
-- 上記手順をシェルでまとめる。
+- https conversion(ALB,Route53)
+- CloudFront
+- Refactoring(Cloudmap is not necessary at this time.)
+- Frontend Container
+- Combine the above methods into a shell script.
