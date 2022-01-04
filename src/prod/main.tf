@@ -27,8 +27,10 @@ module "sg" {
 
 # IAM role
 module "iam" {
-  source   = "../module/iam"
-  app_name = var.app_name
+  source      = "../module/iam"
+  app_name    = var.app_name
+  system      = var.app_name
+  github_repo = "comu2e/test-worker-scheduler"
 }
 module "compute" {
   source           = "../module/compute"
@@ -109,6 +111,7 @@ module "rds" {
   app_name           = var.app_name
   vpc_id             = module.network.vpc_id
   db_sg_id           = module.sg.db_sg_id
-  instace_type       = "db.t3.large"
+  instace_type       = "db.t3.medium"
   private_subnet_ids = module.network.private_subnet_ids
 }
+
