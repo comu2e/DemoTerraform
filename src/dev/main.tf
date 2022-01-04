@@ -60,7 +60,7 @@ module "ecs_app" {
   source                         = "../module/ecs"
   task_definition_file_path      = "../module/ecs/container_definitions.json"
   entry_container_name           = "nginx"
-  entry_container_port           = 80e
+  entry_container_port           = 80
   app_name                       = var.app_name
   cluster                        = aws_ecs_cluster.main.name
   placement_subnet               = module.network.private_subnet_ids
