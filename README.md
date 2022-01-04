@@ -103,7 +103,7 @@ Store secret information in AWS Parameter store.
 
 The following commands are executed for the environment variables.
 ```
-$ aws ssm put-parameter --type SecureString --name "/${app_nameを入力}/該当するキー" --value "該当する値"  --overwrite
+$ aws ssm put-parameter --type SecureString --name "/${app_name}/{similar key} --value {similar value}  --overwrite
 ```
 
 
@@ -112,7 +112,7 @@ $ aws ssm put-parameter --type SecureString --name "/${app_nameを入力}/該当
 
 - Please set the environment on AWS used by aws cli.
 - The key to the ec2 bastion server is in module / compute / template
-Create it with `` `ssh-keygen``` or register the public key you have already created.
+Create it with ```ssh-keygen``` or register the public key you have already created.
 
 ### ⑤　etc.
 
@@ -131,8 +131,8 @@ If you want to use it, please set up a Grafana Cloud account.
 ![aws](https://user-images.githubusercontent.com/5231283/143753728-45549b82-2098-492f-a014-6b23c05f510f.png)
 
 ## Todo 
+- Combine the above methods into a shell script.
 - https conversion(ALB,Route53)
-- CloudFront
 - Refactoring(Cloudmap is not necessary at this time.)
 - Frontend Container
-- Combine the above methods into a shell script.
+- CloudFront
