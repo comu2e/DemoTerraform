@@ -36,7 +36,7 @@ resource "aws_ecs_service" "main" {
 
   network_configuration {
     subnets          = var.placement_subnet
-    security_groups  = var.sg
+    security_groups  = var.sg_list
     assign_public_ip = true
   }
 
