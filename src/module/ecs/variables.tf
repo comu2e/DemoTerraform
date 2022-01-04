@@ -15,7 +15,7 @@ variable "placement_subnet" {
   type        = list(string)
 }
 
-variable "sg" {
+variable "sg_list" {
   description = "ECS security group.HTTP/HTTP security group is expected"
   type        = list(string)
 }
