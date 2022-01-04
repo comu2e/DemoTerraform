@@ -42,8 +42,8 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run:
-          terraform init -reconfigure -backend-config="bucket=tfstate-${{env.APP_NAME}}-prod" \
+        run: |
+          terraform init -reconfigure -backend-config="bucket=tfstate-${{env.APP_NAME}}" \
           -backend-config="key=terraform.tfstate.prod" \
           -backend-config="region=ap-northeast-1"
 
