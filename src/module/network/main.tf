@@ -82,7 +82,7 @@ resource "aws_eip" "natgateway" {
   }
 }
 resource "aws_route_table" "private" {
-  count  = length(aws_subnet.public)
+  count  = length(aws_subnet.private)
   vpc_id = aws_vpc.main.id
   tags = {
     Name = "${var.app_name}-private-${count.index}"
