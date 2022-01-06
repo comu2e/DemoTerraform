@@ -10,7 +10,7 @@
 .terraform
 *.tfstate
 *.tfstate.backup
-module/compute/ec2/ec2
+_module/compute/ec2/ec2
 #SSH接続用キー　サンプル用だがgitignoreしておく
-./module/compute/ec2/*
+./_module/compute/ec2/*
 .DS_Store

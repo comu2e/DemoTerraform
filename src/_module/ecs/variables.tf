@@ -26,7 +26,7 @@ variable "target_group_arn" {
 
 variable "task_definition_file_path" {
   type        = string
-  description = "absosule path container definition file ex:./module/ecs/container_definitions.json"
+  description = "absosule path container definition file ex:./_module/ecs/container_definitions.json"
 }
 
 variable "entry_container_name" {
