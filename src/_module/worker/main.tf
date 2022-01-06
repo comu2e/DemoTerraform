@@ -37,11 +37,6 @@ variable "entry_container_port" {
   type        = number
   description = "Entrypoint container port number ex:nginx or worker port is expected"
 }
-variable "service_registries_arn" {
-  type        = string
-  description = "Service Registry arn used for alignment containers"
-}
-
 data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 locals {
@@ -110,9 +105,6 @@ resource "aws_ecs_service" "main" {
   #     container_name   = var.entry_container_name
   #     container_port   = var.entry_container_port
   #   }
-  service_registries {
-    registry_arn = var.service_registries_arn
-  }
 }
 # Log
 resource "aws_cloudwatch_log_group" "main" {
