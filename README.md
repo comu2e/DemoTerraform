@@ -19,7 +19,6 @@ ___
 └── src
     ├── dev : AWS Environment for dev.
     ├── module: Used for dev or prod envrionment.
-    │   ├── cloudmap
     │   ├── compute:db bastion instance.
     │   │   └── ec2
     │   ├── db:DB storage 
@@ -133,6 +132,5 @@ If you want to use it, please set up a Grafana Cloud account.
 ## Todo 
 - Combine the above methods into a shell script.
 - https conversion(ALB,Route53)
-- Refactoring(Cloudmap is not necessary at this time.)
 - Frontend Container
 - CloudFront

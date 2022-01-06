@@ -67,14 +67,8 @@ module "ecs_app" {
   target_group_arn               = module.alb.aws_lb_target_group
   aws_iam_role_task_exection_arn = module.iam.aws_iam_role_task_exection_arn
   sg_list                        = [module.sg.http_sg_id, module.sg.endpoint_sg_id, module.sg.redis_ecs_sg_id]
-  service_registries_arn         = module.cloudmap.cloudmap_internal_Arn
 }
 
-module "cloudmap" {
-  source   = "../module/cloudmap"
-  app_name = var.app_name
-  vpc_id   = module.network.vpc_id
-}
 module "ecs_worker" {
   source = "../module/worker"
   # task_definition_file_path      = "../module/ecs/container_definitions.json"
@@ -92,9 +86,8 @@ module "ecs_worker" {
     module.sg.ses_ecs_sg_id
   ]
 
-  service_registries_arn = module.cloudmap.cloudmap_internal_Arn
-  vpc_id                 = module.network.vpc_id
-  cluster_arn            = aws_ecs_cluster.main.arn
+  vpc_id      = module.network.vpc_id
+  cluster_arn = aws_ecs_cluster.main.arn
 }
 
 
