@@ -18,7 +18,7 @@ ___
 │   └── template : container definition template file.
 └── src
     ├── dev : AWS Environment for dev.
-    ├── module: Used for dev or prod envrionment.
+    ├── _module: Used for dev or prod envrionment.
     │   ├── compute:db bastion instance.
     │   │   └── ec2
     │   ├── db:DB storage 
@@ -72,7 +72,7 @@ Store secret information in AWS Parameter store.
 
 * ```ssh_put.sh``` is prepared.
 
- #### Usage ssh_put.sh
+ #### Usage of ssh_put.sh
 ①copy .env.example
 
  ```cp .env.example .env.dev```
