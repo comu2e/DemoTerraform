@@ -57,8 +57,8 @@ resource "aws_ecs_cluster" "main" {
 }
 
 module "ecs_app" {
-  source                         = "../_module/ecs"
-  task_definition_file_path      = "../_module/ecs/container_definitions.json"
+  source                         = "../_module/ecs/backend/app"
+  task_definition_file_path      = "../_module/ecs/backend/app/container_definitions.json"
   entry_container_name           = "nginx"
   entry_container_port           = 80
   app_name                       = var.app_name
@@ -70,8 +70,8 @@ module "ecs_app" {
 }
 
 module "ecs_worker" {
-  source = "../_module/worker"
-  # task_definition_file_path      = "../_module/ecs/container_definitions.json"
+  source = "../_module/ecs/backend/worker"
+  # task_definition_file_path      = "../_module/ecs/worker/container_definitions.json"
   entry_container_name = "worker"
   entry_container_port = 6379
   app_name             = var.app_name
