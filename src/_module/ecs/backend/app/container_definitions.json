@@ -1,0 +1,117 @@
+[
+  {
+    "name": "nginx",
+    "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/app-nginx:${tag}",
+    "portMappings": [
+      {
+        "containerPort": 80,
+        "hostPort": 80,
+        "protocol": "tcp"
+      }
+    ],
+    "linuxParameters": {
+      "initProcessEnabled": true
+    },
+    "managedAgents": [
+      {
+        "lastStartedAt": "2021-03-01T14:49:44.574000-06:00",
+        "name": "ExecuteCommandAgent",
+        "lastStatus": "RUNNING"
+      }
+    ],
+    "mountPoints": [
+      {
+        "sourceVolume": "app-storage",
+        "containerPath": "/app"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-region": "${region}",
+        "awslogs-group": "/${name}/ecs",
+        "awslogs-stream-prefix": "${name}-nginx"
+      }
+    }
+  },
+  {
+    "name": "app",
+    "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/app:${tag}",
+    "managedAgents": [
+      {
+        "lastStartedAt": "2021-03-01T14:49:44.574000-06:00",
+        "name": "ExecuteCommandAgent",
+        "lastStatus": "RUNNING"
+      }
+    ],
+    "linuxParameters": {
+      "initProcessEnabled": true
+    },
+    "mountPoints": [
+      {
+        "sourceVolume": "app-storage",
+        "containerPath": "/app"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-region": "${region}",
+        "awslogs-group": "/${name}/ecs",
+        "awslogs-stream-prefix": "${name}-app"
+      }
+    },
+    "environment": [
+      {
+        "name": "APP_ENV",
+        "value": "production"
+      },
+      {
+        "name": "LOG_CHANNEL",
+        "value": "stderr"
+      },
+      {
+        "name": "SESSION_DRIVER",
+        "value": "redis"
+      },
+      {
+        "name": "CACHE_DRIVER",
+        "value": "redis"
+      },
+      {
+        "name": "QUEUE_DRIVER",
+        "value": "redis"
+      },
+      {
+        "name": "QUEUE_CONNECTION",
+        "value": "redis"
+      }
+    ],
+    "secrets": [
+      {
+        "name": "APP_KEY",
+        "valueFrom": "/${name}/APP_KEY"
+      },
+      {
+        "name": "REDIS_HOST",
+        "valueFrom": "/${name}/REDIS_HOST"
+      },
+      {
+        "name": "DB_HOST",
+        "valueFrom": "/${name}/DB_HOST"
+      },
+      {
+        "name": "DB_DATABASE",
+        "valueFrom": "/${name}/DB_NAME"
+      },
+      {
+        "name": "DB_USERNAME",
+        "valueFrom": "/${name}/DB_USERNAME"
+      },
+      {
+        "name": "DB_PASSWORD",
+        "valueFrom": "/${name}/DB_PASSWORD"
+      }
+    ]
+  }
+]
