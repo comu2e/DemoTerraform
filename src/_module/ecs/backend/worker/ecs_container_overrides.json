@@ -1,0 +1,12 @@
+{
+  "containerOverrides": [
+    {
+      "name": "scheduler",
+      "command": [
+        "php",
+        "artisan",
+        "${command}"
+      ]
+    }
+  ]
+}

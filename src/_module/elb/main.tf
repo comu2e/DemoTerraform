@@ -44,7 +44,8 @@ resource "aws_lb_target_group" "main" {
   name   = var.app_name
   vpc_id = var.vpc_id
   #FargateではIPに設定する必要ある
-  target_type          = "ip"
+  target_type = "ip"
+  # 80port
   port                 = 80
   deregistration_delay = 300
   protocol             = "HTTP"
@@ -55,8 +56,7 @@ resource "aws_lb_target_group" "main" {
     timeout             = 5
     interval            = 30
     matcher             = 200
-    # port = 80?
-    port     = "traffic-port"
-    protocol = "HTTP"
+    port                = "traffic-port"
+    protocol            = "HTTP"
   }
 }

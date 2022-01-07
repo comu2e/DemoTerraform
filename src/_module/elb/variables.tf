@@ -16,3 +16,8 @@ variable "public_subnet_ids" {
   description = "Public subnet ids."
   type        = list(string)
 }
+
+variable "port" {
+  description = "ALB incoming Port"
+  type        = number
+}

@@ -1,0 +1,43 @@
+[
+  {
+    "name": "${name}",
+    "image": "${account_id}.dkr.ecr.${region}.amazonaws.com/${name}:${tag}",
+    "command": [
+      "yarn",
+      "start"
+    ],
+    "cpu": 256,
+    "memory": 512,
+    "network_mode": "awsvpc",
+    "portMappings": [
+      {
+        "containerPort": 3000,
+        "protocol": "tcp"
+      }
+    ],
+    "managedAgents": [
+      {
+        "lastStartedAt": "2021-03-01T14:49:44.574000-06:00",
+        "name": "ExecuteCommandAgent",
+        "lastStatus": "RUNNING"
+      }
+    ],
+    "linuxParameters": {
+      "initProcessEnabled": true
+    },
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-region": "${region}",
+        "awslogs-group": "/${name}/frontend",
+        "awslogs-stream-prefix": "${name}-frontend"
+      }
+    },
+    "environment": [
+      {
+        "name": "PORT",
+        "value": "80"
+      }
+    ]
+  }
+]
