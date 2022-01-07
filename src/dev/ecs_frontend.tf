@@ -1,4 +1,6 @@
 # variable
+#ECS Frontendのコンテナ
+# 正式版になったらroot/main.tfに配置する。
 locals {
   app_name = "${var.app_name}-admin-hm"
 }
