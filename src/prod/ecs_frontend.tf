@@ -33,7 +33,7 @@ module "front_elb" {
 # フロント用のSG
 # ==========================================================
 module "frontend_sg" {
-  source              = "../_module/security_group/frontend"
+  source              = "../_module/security/frontend"
   app_name            = local.app_name
   vpc_cidr            = var.vpc_cidr
   vpc_id              = module.network.vpc_id
