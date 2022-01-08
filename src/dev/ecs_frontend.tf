@@ -55,7 +55,7 @@ module "front_ecs" {
   target_group_arn = module.front_elb.aws_lb_target_group
   # ECS のtask に関連付けるIAM の設定
   iam_role_task_execution_arn = module.iam.aws_iam_role_task_exection_arn
-  port                        = 3000 # task定義に渡すport
+  entry_container_port        = 3000 # task定義に渡すport
 
   sg_list = [
     module.frontend_sg.frotend__alb_sg_id # ALBの設定

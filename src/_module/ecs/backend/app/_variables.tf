@@ -41,19 +41,8 @@ variable "entry_container_port" {
 
 data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
+
 locals {
   account_id = data.aws_caller_identity.current.account_id
   region     = data.aws_region.current.name
-}
-data "template_file" "container_definitions" {
-  template = file(abspath(var.task_definition_file_path))
-  # templateのjsonファイルに値を渡す
-  vars = {
-    tag                    = "latest"
-    name                   = var.app_name
-    entry_container_name   = var.entry_container_name
-    account_id             = local.account_id
-    region                 = local.region
-    cloudwatch_prefix_name = "ecs"
-  }
 }
