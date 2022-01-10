@@ -9,12 +9,12 @@ variable "vpc_cidr" {
   type = string
 }
 
-variable "private_route_table" {
+variable "private_route_tables" {
   type = list(any)
 }
-variable "private_subnet" {
+variable "private_subnets" {
   type = list(string)
 }
-variable "private_subnet_cidrs" {
+variable "private_subnets_cidrs" {
   type = list(string)
 }

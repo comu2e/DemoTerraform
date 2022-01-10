@@ -1,4 +1,6 @@
 # variable
+#ECS Frontendのコンテナ
+# 正式版になったらroot/main.tfに配置する。
 locals {
   app_name = "${var.app_name}-admin-hm"
 }
@@ -31,7 +33,7 @@ module "front_elb" {
 # フロント用のSG
 # ==========================================================
 module "frontend_sg" {
-  source              = "../_module/security/frontend"
+  source              = "../_module/security_group/frontend"
   app_name            = local.app_name
   vpc_cidr            = var.vpc_cidr
   vpc_id              = module.network.vpc_id
@@ -53,7 +55,7 @@ module "front_ecs" {
   target_group_arn = module.front_elb.aws_lb_target_group
   # ECS のtask に関連付けるIAM の設定
   iam_role_task_execution_arn = module.iam.aws_iam_role_task_exection_arn
-  port                        = 3000 # task定義に渡すport
+  entry_container_port        = 3000 # task定義に渡すport
 
   sg_list = [
     module.frontend_sg.frotend__alb_sg_id # ALBの設定

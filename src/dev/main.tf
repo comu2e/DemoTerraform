@@ -15,13 +15,13 @@ module "network" {
 }
 # SecurityGroup
 module "sg" {
-  source               = "../_module/security"
-  app_name             = var.app_name
-  vpc_cidr             = var.vpc_cidr
-  vpc_id               = module.network.vpc_id
-  private_route_table  = module.network.route_table_private
-  private_subnet       = module.network.private_subnet_ids
-  private_subnet_cidrs = var.private_subnet_cidrs
+  source                = "../_module/security_group"
+  app_name              = var.app_name
+  vpc_cidr              = var.vpc_cidr
+  vpc_id                = module.network.vpc_id
+  private_route_tables  = module.network.route_table_private
+  private_subnets       = module.network.private_subnet_ids
+  private_subnets_cidrs = var.private_subnet_cidrs
 
 }
 
@@ -46,7 +46,7 @@ module "alb" {
   vpc_id            = module.network.vpc_id
   public_subnet_ids = module.network.public_subnet_ids
   http_sg           = module.sg.http_sg_id
-  port = 80
+  port              = 80
 }
 
 resource "aws_ecs_cluster" "main" {
