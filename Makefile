@@ -10,9 +10,7 @@ SCOPE := ${ROOT}/${SRC}
 CD = [[ -d $(SCOPE) ]] && cd $(SCOPE)
 ENV__PROD_FILE := .env.production
 TF_STATE_BUCKET := tfstate-${APP_NAME}-${SRC}
-TR_INIT_OPTION := -reconfigure -backend-config="bucket=${TF_STATE_BUCKET}"  \
-           -backend-config="key=terraform.tfstate.${SRC}" \
-          -backend-config="region=ap-northeast-1"
+
 
 s3_tfbackend:
 	  # S3 bucket作成 versioning機能追加
@@ -28,7 +26,7 @@ ssm_put:
 
 init:
 	@${CD} && \
-	terraform init ${TR_INIT_OPTION}
+	terraform init
 	
 plan:
 	@${CD} && \
@@ -37,11 +35,11 @@ plan:
 # Make migrate if S3 bucket name is changed.
 migrate:
 	@${CD} && \
-	terraform init -migrate-state ${TR_INIT_OPTION}
+	terraform init -migrate-state
 # Make resources by terraform
 apply:
 	@${CD} && \
-	terraform init ${TR_INIT_OPTION} && \
+	terraform init && \
 	terraform apply
 
 # Refresh tfstate if created resources are changed by manually.
@@ -52,13 +50,13 @@ refresh:
 # Make state list of resources.
 list:
 	@${CD} && \
-	terraform init ${TR_INIT_OPTION} && \
+	terraform init && \
 	terraform state list
 
 # Destroy terraform resources.
 destroy:
 	@${CD} && \
-	terraform init ${TR_INIT_OPTION} && \
+	terraform init && \
 	terraform destroy
 
 outputs:
