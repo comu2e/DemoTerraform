@@ -11,7 +11,6 @@ CD = [[ -d $(SCOPE) ]] && cd $(SCOPE)
 ENV__PROD_FILE := .env.production
 TF_STATE_BUCKET := tfstate-${APP_NAME}-${SRC}
 
-
 s3_tfbackend:
 	  # S3 bucket作成 versioning機能追加
 		aws s3 mb s3://${TF_STATE_BUCKET}&& \

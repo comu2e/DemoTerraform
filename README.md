@@ -22,8 +22,12 @@ ___
     │   ├── compute:db bastion instance.
     │   │   └── ec2
     │   ├── db:DB storage 
-    │   ├── ecs:web/app server.
-    │   │   └── template
+    │   ├── ecs
+    │   │   ├── backend
+    │   │   │   ├── app : web/app container
+    │   │   │   └── worker : worker container 
+    │   │   ├── frontend :frontend container ,which connected to backend/app
+    │   │   └── template
     │   ├── elb:load balancer
     │   ├── iam
     │   ├── network:AWS Network,vpc/route table/internet gateway.
@@ -132,5 +136,4 @@ If you want to use it, please set up a Grafana Cloud account.
 ## Todo 
 - Combine the above methods into a shell script.
 - https conversion(ALB,Route53)
-- Frontend Container
 - CloudFront

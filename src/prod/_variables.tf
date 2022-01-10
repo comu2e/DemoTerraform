@@ -1,6 +1,6 @@
 variable "app_name" {
   type    = string
-  default = "test-worker-scheduler-prod"
+  default = "housebokan"
 }
 variable "azs" {
   type    = list(string)

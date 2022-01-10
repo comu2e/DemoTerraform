@@ -46,6 +46,7 @@ module "alb" {
   vpc_id            = module.network.vpc_id
   public_subnet_ids = module.network.public_subnet_ids
   http_sg           = module.sg.http_sg_id
+  port = 80
 }
 
 resource "aws_ecs_cluster" "main" {
@@ -56,55 +57,55 @@ resource "aws_ecs_cluster" "main" {
   }
 }
 
-module "ecs_app" {
-  source                         = "../_module/ecs"
-  task_definition_file_path      = "../_module/ecs/container_definitions.json"
-  entry_container_name           = "nginx"
-  entry_container_port           = 80
-  app_name                       = var.app_name
-  cluster                        = aws_ecs_cluster.main.name
-  placement_subnet               = module.network.private_subnet_ids
-  target_group_arn               = module.alb.aws_lb_target_group
-  aws_iam_role_task_exection_arn = module.iam.aws_iam_role_task_exection_arn
-  sg_list                        = [module.sg.http_sg_id, module.sg.endpoint_sg_id, module.sg.redis_ecs_sg_id]
-}
+# module "ecs_app" {
+#   source                         = "../_module/ecs/backend/app"
+#   task_definition_file_path      = "../_module/ecs/backend/app/container_definitions.json"
+#   entry_container_name           = "nginx"
+#   entry_container_port           = 80
+#   app_name                       = var.app_name
+#   cluster                        = aws_ecs_cluster.main.name
+#   placement_subnet               = module.network.private_subnet_ids
+#   target_group_arn               = module.alb.aws_lb_target_group
+#   aws_iam_role_task_exection_arn = module.iam.aws_iam_role_task_exection_arn
+#   sg_list                        = [module.sg.http_sg_id, module.sg.endpoint_sg_id, module.sg.redis_ecs_sg_id]
+# }
 
-module "ecs_worker" {
-  source = "../_module/worker"
-  # task_definition_file_path      = "../_module/ecs/container_definitions.json"
-  entry_container_name = "worker"
-  entry_container_port = 6379
-  app_name             = var.app_name
-  cluster              = aws_ecs_cluster.main.name
-  placement_subnet     = module.network.private_subnet_ids
-  # target_group_arn               = module.alb.aws_lb_target_group
-  aws_iam_role_task_exection_arn = module.iam.aws_iam_role_task_exection_arn
-  sg = [
-    module.sg.http_sg_id,
-    module.sg.endpoint_sg_id,
-    module.sg.redis_ecs_sg_id,
-    module.sg.ses_ecs_sg_id
-  ]
+# module "ecs_worker" {
+#   source = "../_module/ecs/backend/worker"
+#   # task_definition_file_path      = "../_module/ecs/worker/container_definitions.json"
+#   entry_container_name = "worker"
+#   entry_container_port = 6379
+#   app_name             = var.app_name
+#   cluster              = aws_ecs_cluster.main.name
+#   placement_subnet     = module.network.private_subnet_ids
+#   # target_group_arn               = module.alb.aws_lb_target_group
+#   aws_iam_role_task_exection_arn = module.iam.aws_iam_role_task_exection_arn
+#   sg = [
+#     module.sg.http_sg_id,
+#     module.sg.endpoint_sg_id,
+#     module.sg.redis_ecs_sg_id,
+#     module.sg.ses_ecs_sg_id
+#   ]
 
-  vpc_id      = module.network.vpc_id
-  cluster_arn = aws_ecs_cluster.main.arn
-}
+#   vpc_id      = module.network.vpc_id
+#   cluster_arn = aws_ecs_cluster.main.arn
+# }
 
 
-module "redis" {
-  source             = "../_module/redis"
-  app_name           = var.app_name
-  vpc_id             = module.network.vpc_id
-  redis_sg_id        = module.sg.redis_ecs_sg_id
-  private_subnet_ids = module.network.private_subnet_ids
-}
+# module "redis" {
+#   source             = "../_module/redis"
+#   app_name           = var.app_name
+#   vpc_id             = module.network.vpc_id
+#   redis_sg_id        = module.sg.redis_ecs_sg_id
+#   private_subnet_ids = module.network.private_subnet_ids
+# }
 
-module "rds" {
-  source             = "../_module/db"
-  app_name           = var.app_name
-  vpc_id             = module.network.vpc_id
-  db_sg_id           = module.sg.db_sg_id
-  instace_type       = "db.t3.medium"
-  private_subnet_ids = module.network.private_subnet_ids
-}
+# module "rds" {
+#   source             = "../_module/db"
+#   app_name           = var.app_name
+#   vpc_id             = module.network.vpc_id
+#   db_sg_id           = module.sg.db_sg_id
+#   instace_type       = "db.t3.medium"
+#   private_subnet_ids = module.network.private_subnet_ids
+# }
 

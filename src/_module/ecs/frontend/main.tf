@@ -28,8 +28,9 @@ resource "aws_ecs_task_definition" "frontend" {
 # ========================================================
 resource "aws_ecs_service" "frontend" {
   # depends_on = [aws_lb_listener_rule.frontend]
-  name    = "${var.app_name}-frontend"
-  cluster = var.cluster_name # clusterの指定
+  name                   = "${var.app_name}-frontend"
+  cluster                = var.cluster_name # clusterの指定
+  enable_execute_command = true             # SSMの有効化
 
   launch_type      = "FARGATE"
   platform_version = "1.4.0"
@@ -51,7 +52,8 @@ resource "aws_ecs_service" "frontend" {
   load_balancer {
     target_group_arn = var.target_group_arn
     container_name   = var.app_name
-    container_port   = 3000
+    #frontendのポートに合わせる必要あり。
+    container_port   = 3000 
   }
 
   # cloudmapで使用
