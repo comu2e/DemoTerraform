@@ -3,7 +3,7 @@ provider "aws" {
   # version = "3.0"
 }
 terraform {
-  required_version = "1.0.11"
+  required_version = "1.1.3"
 }
 module "network" {
   source               = "../_module/network"
