@@ -3,7 +3,7 @@ provider "aws" {
   # version = "3.0"
 }
 terraform {
-  required_version = "1.0.11"
+  required_version = "1.1.13"
 }
 module "network" {
   source               = "../_module/network"
@@ -46,7 +46,7 @@ module "alb" {
   vpc_id            = module.network.vpc_id
   public_subnet_ids = module.network.public_subnet_ids
   http_sg           = module.sg.http_sg_id
-  port = 80
+  port              = 80
 }
 
 resource "aws_ecs_cluster" "main" {
