@@ -35,7 +35,6 @@ resource "aws_lb_listener_rule" "main" {
 
   condition {
     path_pattern {
-      # [*]?
       values = ["*"]
     }
   }
