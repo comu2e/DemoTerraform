@@ -2,7 +2,6 @@
 ## Concept
 Construct AWS ECS Fargate with terraform sample.
 
-
 ## Environment
 - Terraform/v1.0.11
 - aws-cli/2.2.43 
